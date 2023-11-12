@@ -9,24 +9,24 @@ public class Generation : MonoBehaviour
     public GameObject vCorridor;
     public GameObject hCorridor;
     private int recursions = 1;
-    private int targetRecursions = 7; // this is number desired rooms + 1 (e.g. put 5 if you want 4 rooms)
+    private int targetRecursions = 3; // this is number desired rooms
 
     // Start is called before the first frame update
     void Start()
     {
         var myNewObject = Instantiate(room, new Vector2(0, 0), Quaternion.identity, gameObject.transform);
         var startingVect = new Vector2(0, 0);
-        chooseHallwayRandom(startingVect, "pass");
+        chooseHallwayRandom(startingVect, "pass", -1);
     }
 
     //removed update{} method
 
-    void chooseHallwayRandom(Vector2 currentVect, string previousDirection)
+    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber)
     {
         var direction = "";
         // This next line should go into an array along with height, vector to centre.m Also they dont have to be vectors but you could combine to make into a single vector.
-        var roomDimensions = new Vector2(6, 6);
         var dirChosen = false;
+        var dirToExit = new Vector2(0,0);
         Debug.Log("Beggining direction selection. Current vect is:" + currentVect);
 
         int directionN = 0;
@@ -65,19 +65,25 @@ public class Generation : MonoBehaviour
             }
         }
 
-
-        //selects room 0 and gets all relevant information
-        var dirToExitList = getRoomInfo(0);
-        //takes the newly stated list and gets the relevant peice of information from it. 
-        var dirToExit = dirToExitList[directionN];
-        // ____ = string[right, left, top, bottom]
-        // could also just add "direction = ____[directionNumber-1]" or smth
+        //if -1 is passed, then the default first room is chosen
+        if (previousRoomNumber != -1)
+        {
+            //selects room 0 and gets all relevant information
+            var dirToExitList = getRoomInfo(previousRoomNumber - 1);
+            //takes the newly stated list and gets the relevant peice of information from it. 
+            dirToExit = dirToExitList[directionN];
+        }
+        else
+        {
+            var dirToExitList = getRoomInfo(0);
+            dirToExit = dirToExitList[directionN];
+        }
 
         Debug.Log(direction);
-        spawnHallwayRandom(currentVect, dirToExit, direction, roomDimensions);
+        spawnHallwayRandom(currentVect, dirToExit, direction);
     }
 
-    void spawnHallwayRandom(Vector2 currentVect, Vector2 dirToExit, string direction, Vector2 roomDimensions)
+    void spawnHallwayRandom(Vector2 currentVect, Vector2 dirToExit, string direction)
     {
         var randomHallwayCount = UnityEngine.Random.Range(2, 7);
         currentVect += new Vector2(dirToExit.x, dirToExit.y);
@@ -89,7 +95,7 @@ public class Generation : MonoBehaviour
             {
                 var Hallway = Instantiate(vCorridor, new Vector2(currentVect.x, currentVect.y + ((direction == "top" ? 1 : -1) * i)), Quaternion.identity, gameObject.transform);
             }
-            currentVect.y += randomHallwayCount * (direction == "top" ? 1 : -1);
+            currentVect.y += (randomHallwayCount - 1) * (direction == "top" ? 1 : -1);
         }
 
         if (direction == "right" || direction == "left")
@@ -98,51 +104,62 @@ public class Generation : MonoBehaviour
             {
                 var Hallway = Instantiate(hCorridor, new Vector2(currentVect.x + ((direction == "right" ? 1 : -1) * i), currentVect.y), Quaternion.identity, gameObject.transform);
             }
-            currentVect.x += randomHallwayCount * (direction == "right" ? 1 : -1);
+            currentVect.x += (randomHallwayCount - 1) * (direction == "right" ? 1 : -1);
         }
 
         Debug.Log("CurrentVect after hallway: " + currentVect);
 
-        spawnRoomRandom(currentVect, dirToExit, direction, roomDimensions);
+        spawnRoomRandom(currentVect, dirToExit, direction);
 
     }
 
     // SO when left is called, because the vectors aren't similar (room is split so 3 and 4 are the dirToExit vectors), the room only needs to spawn 2to the right rather than 4 as 6 (room width - dirToExit.x = 2)
 
 
-    void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction, Vector2 roomDimensions)
+    void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction)
     {
+        int roomNumber = chooseRoomRandom();
+        GameObject roomVar = Resources.Load<GameObject>("Rooms/Room" + roomNumber);
+        //gets all relevant room Info
+        var roomInformation = getRoomInfo(roomNumber - 1);
+        //get roomDimensions
+        var roomDimensions = roomInformation[0];
+
         //spawn a room at currentVect + direction to centre of room
         //Debug.Log("The Current coordinate is" + currentVect + " . the room should spawn " + dirToExit + " away from current, so will end up at" + new Vector2(currentVect.x + dirToExit.x, currentVect.y + dirToExit.y));
         if (direction == "right")
         {
-            currentVect += new Vector2(roomDimensions.x - dirToExit.x, dirToExit.y);
-            var spawnedRoom = Instantiate(room, currentVect, Quaternion.identity, gameObject.transform);
+            currentVect += new Vector2(-(roomInformation[2]).x, -(roomInformation[2]).y);
+            var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
         }
         else if (direction == "left")
         {
-            currentVect += new Vector2(-(roomDimensions.x + dirToExit.x), dirToExit.y);
-            var spawnedRoom = Instantiate(room, currentVect, Quaternion.identity, gameObject.transform);
+            currentVect += new Vector2(-(roomInformation[1]).x, -(roomInformation[1]).y);
+            var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
         }
         else if (direction == "top")
         {
             // 6 - vect 2 = roomWidth - original vector
-            currentVect += new Vector2(dirToExit.x, (roomDimensions.y - dirToExit.y));
-            var spawnedRoom = Instantiate(room, currentVect, Quaternion.identity, gameObject.transform);
+            currentVect += new Vector2(-(roomInformation[4]).x, -(roomInformation[4]).y);
+            var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
         }
         else if (direction == "bottom")
         {
-            currentVect += new Vector2(dirToExit.x, -(roomDimensions.y + dirToExit.y));
-            var spawnedRoom = Instantiate(room, currentVect, Quaternion.identity, gameObject.transform);
+            currentVect += new Vector2(-(roomInformation[3]).x, -(roomInformation[3]).y);
+            var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
         }
 
-        var roomInformation = getRoomInfo(0);
-        //Debug.Log("Room dimensions are: " + roomInformation[0]);
         Debug.Log("The CurrentVect of the the most recently installed room is " + currentVect);
 
         //call chooseHallwayRandom
-        incrementRecursionCounter(currentVect, direction);
+        incrementRecursionCounter(currentVect, direction, roomNumber);
         //currentVect += getRoomInfo((direction == "right" || direction == "left") || (direction == "top" || direction == "bottom") ? ((direction == "right") ? 1 : 2) : ((direction == "top") ? 3 : 4))
+    }
+
+    int chooseRoomRandom()
+    {
+        var roomNumber = UnityEngine.Random.Range(1, 3);
+        return roomNumber;
     }
 
 
@@ -153,7 +170,8 @@ public class Generation : MonoBehaviour
         Vector2[,] roomArray = new Vector2[,]
         {
             //room dimensions, dirToRight, dirToLeft, dirToTop, dirToBottom
-            {new Vector2(6, 6),new Vector2(3, 0),new Vector2(-4, 0),new Vector2(0, 3),new Vector2(0, -4)}
+            {new Vector2(6, 6),new Vector2(3, 0),new Vector2(-4, 0),new Vector2(0, 3),new Vector2(0, -4)},
+            {new Vector2(8, 8),new Vector2(4, 0),new Vector2(-5, 0),new Vector2(0, 4),new Vector2(0, -5)}
         };
 
         List<Vector2> roomInfoList = new List<Vector2>();
@@ -167,7 +185,7 @@ public class Generation : MonoBehaviour
     }
 
 
-    void incrementRecursionCounter(Vector2 currentVect, string direction)
+    void incrementRecursionCounter(Vector2 currentVect, string direction, int previousRoomNumber)
     {
         Debug.Log("recursion " + recursions + " has been completed");
         recursions = recursions + 1;
@@ -179,7 +197,7 @@ public class Generation : MonoBehaviour
         else
         {
             Debug.Log("Room " + (recursions) + "/" + (targetRecursions) + "spawned");
-            chooseHallwayRandom(currentVect, direction);
+            chooseHallwayRandom(currentVect, direction, previousRoomNumber);
         }
     }
 
