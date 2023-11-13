@@ -9,7 +9,7 @@ public class Generation : MonoBehaviour
     public GameObject vCorridor;
     public GameObject hCorridor;
     private int recursions = 1;
-    private int targetRecursions = 3; // this is number desired rooms
+    private int targetRecursions = 6; // this is number desired rooms
 
     // Start is called before the first frame update
     void Start()
