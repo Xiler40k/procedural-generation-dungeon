@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c1533ba3f18054a88906ec8fee96fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room: {fileID: 7048664540875181450, guid: 3a551503085a74145900ac021dc6de86, type: 3}
+  startingRoom: {fileID: 9169077631832164862, guid: 9f7a9efe5bd21114ea42626d037b4242, type: 3}
   parent: {fileID: 67552980}
   vCorridor: {fileID: 6967787771261492557, guid: bb2ef658098b4104fb838148e0ee9454, type: 3}
   hCorridor: {fileID: 3458677340063487281, guid: 513e189620c8803468acf176a5de7b4a, type: 3}
@@ -616,7 +616,7 @@ GameObject:
   - component: {fileID: 1732412308}
   - component: {fileID: 1732412307}
   - component: {fileID: 1732412309}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -661,8 +661,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1314060523
+  m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: fe877276a2b83fe4ca28b49c6d534769, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
