@@ -32,7 +32,7 @@ public class Generation : MonoBehaviour
         // This next line should go into an array along with height, vector to centre.m Also they dont have to be vectors but you could combine to make into a single vector.
         var dirChosen = false; //don't think I need it?
         var dirToExit = new Vector2(0,0);
-        Debug.Log("Beggining direction selection. Current vect is:" + currentVect);
+        Debug.Log("Begining direction selection. Current vect is:" + currentVect);
 
         int directionN = 0;
 
@@ -105,7 +105,6 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit1");
             Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
         }
-
         if (directionN != 2 && previousDirection != "right")
         {
             var vectToClose = currentVect + dirToExitList[2] + new Vector2(1, 0);
@@ -136,12 +135,11 @@ public class Generation : MonoBehaviour
         {
             for (var i = 0; i < randomHallwayCount; i++)
             {
-                var Hallway = Instantiate(vCorridor, new Vector2(currentVect.x, currentVect.y + ((direction == "top" ? 1 : -1) * i)), Quaternion.identity, gameObject.transform); //don't think I need this
+                var Hallway = Instantiate(vCorridor, new Vector2(currentVect.x, currentVect.y + ((direction == "top" ? 1 : -1) * i)), Quaternion.identity, gameObject.transform); 
             }
             currentVect.y += (randomHallwayCount - 1) * (direction == "top" ? 1 : -1);
         }
-
-        if (direction == "right" || direction == "left")
+        else
         {
             for (var i = 0; i < randomHallwayCount; i++)
             {

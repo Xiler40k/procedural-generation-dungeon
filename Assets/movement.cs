@@ -5,7 +5,7 @@ using UnityEngine;
 public class movement : MonoBehaviour
 {
     public float playerSpeed;
-    public Rigidbody2D rb;
+    public Rigidbody2D player;
     private Vector2 playerDirection;
 
     // Update is called once per frame
@@ -13,7 +13,7 @@ public class movement : MonoBehaviour
     {
         playerDirection.x = Input.GetAxisRaw("Horizontal");
         playerDirection.y = Input.GetAxisRaw("Vertical");
-        rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
+        player.MovePosition(player.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
     }
 
     void FixedUpdate()
