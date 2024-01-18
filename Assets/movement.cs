@@ -13,11 +13,10 @@ public class movement : MonoBehaviour
     {
         playerDirection.x = Input.GetAxisRaw("Horizontal");
         playerDirection.y = Input.GetAxisRaw("Vertical");
-        player.MovePosition(player.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
     }
 
     void FixedUpdate()
     {
+        player.MovePosition(player.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
     }
-
 }
