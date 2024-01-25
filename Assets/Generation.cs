@@ -11,17 +11,25 @@ public class Generation : MonoBehaviour
     private int recursions = 0;
     private int targetRecursions = 3; // this is number of desired rooms
 
+    HashGrid hashTable;
+
+    Backtrack backtrack;
+
     // Start is called before the first frame update
     void Start()
     {
+        hashTable = GameObject.FindGameObjectWithTag("HashTable").GetComponent<HashGrid>();
+        hashTable.testing(1);
+
+
         var spawnRoom = Instantiate(startingRoom, new Vector2(0, 0), Quaternion.identity, gameObject.transform); //doesn't need to be a variable
         var startingVect = new Vector2(0, 8);
-        //in this starting case, -1 prompts "top" to instead rig the alogithm to go to top instead of avoid it.
-        chooseHallwayRandom(startingVect, "top", -1);
+        //in this starting case, -1 prompts "up" to instead rig the alogithm to go to up instead of avoid it.
+        chooseHallwayRandom(startingVect, "up", -1);
         startingVect = new Vector2(-14, 0);
         chooseHallwayRandom(startingVect, "left", -1);
         startingVect = new Vector2(0, -7);
-        chooseHallwayRandom(startingVect, "bottom", -1);
+        chooseHallwayRandom(startingVect, "down", -1);
     }
 
     //removed update{} method
@@ -61,16 +69,16 @@ public class Generation : MonoBehaviour
                 dirChosen = true;
                 break;
             }
-            else if (directionNumber == 3 && previousDirection != "bottom")
+            else if (directionNumber == 3 && previousDirection != "down")
             {
-                direction = "top";
+                direction = "up";
                 directionN = 3;
                 dirChosen = true;
                 break;
             }
-            else if (directionNumber == 4 && previousDirection != "top")
+            else if (directionNumber == 4 && previousDirection != "up")
             {
-                direction = "bottom";
+                direction = "down";
                 directionN = 4;
                 dirChosen = true;
                 break;
@@ -111,13 +119,13 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit2");
             Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
         }
-        if (directionN != 3 && previousDirection != "bottom")
+        if (directionN != 3 && previousDirection != "down")
         {
             var vectToClose = currentVect + dirToExitList[3] + new Vector2(0, -1);
             exitPrefab = Resources.Load<GameObject>("Exits/Exit3");
             Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
         }
-        if (directionN != 4 && previousDirection != "top")
+        if (directionN != 4 && previousDirection != "up")
         {
             var vectToClose = currentVect + dirToExitList[4] + new Vector2(0, 1);
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
@@ -128,16 +136,25 @@ public class Generation : MonoBehaviour
     void spawnHallwayRandom(Vector2 currentVect, Vector2 dirToExit, string direction)
     {
         var randomHallwayCount = UnityEngine.Random.Range(2, 7);
+        //use hashTable to check if a collision will occur
+        /*
+        var collisionCheck = hashTable.checkGridWalls(currentVect, direction, randomHallwayCount);
+        if (collisionCheck == true)
+        {
+            // // //backtrack to previous state of chooseHallwayRandom with new parameter that tells it not to use that direction. 
+        }
+        */
+
         currentVect += new Vector2(dirToExit.x, dirToExit.y);
         Debug.Log("Hallways should start spawning at " + currentVect);
 
-        if (direction == "top" || direction == "bottom")
+        if (direction == "up" || direction == "down")
         {
             for (var i = 0; i < randomHallwayCount; i++)
             {
-                var Hallway = Instantiate(vCorridor, new Vector2(currentVect.x, currentVect.y + ((direction == "top" ? 1 : -1) * i)), Quaternion.identity, gameObject.transform); 
+                var Hallway = Instantiate(vCorridor, new Vector2(currentVect.x, currentVect.y + ((direction == "up" ? 1 : -1) * i)), Quaternion.identity, gameObject.transform); 
             }
-            currentVect.y += (randomHallwayCount - 1) * (direction == "top" ? 1 : -1);
+            currentVect.y += (randomHallwayCount - 1) * (direction == "up" ? 1 : -1);
         }
         else
         {
@@ -166,6 +183,8 @@ public class Generation : MonoBehaviour
         //get roomDimensions
         var roomDimensions = roomInformation[0];
 
+        hashTable.checkRoomSpace(currentVect, roomDimensions);
+
         //spawn a room at currentVect + direction to centre of room
         //Debug.Log("The Current coordinate is" + currentVect + " . the room should spawn " + dirToExit + " away from current, so will end up at" + new Vector2(currentVect.x + dirToExit.x, currentVect.y + dirToExit.y));
         if (direction == "right")
@@ -178,13 +197,13 @@ public class Generation : MonoBehaviour
             currentVect += new Vector2(-(roomInformation[1]).x, -(roomInformation[1]).y);
             var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
         }
-        else if (direction == "top")
+        else if (direction == "up")
         {
             // 6 - vect 2 = roomWidth - original vector
             currentVect += new Vector2(-(roomInformation[4]).x, -(roomInformation[4]).y);
             var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
         }
-        else if (direction == "bottom")
+        else if (direction == "down")
         {
             currentVect += new Vector2(-(roomInformation[3]).x, -(roomInformation[3]).y);
             var spawnedRoom = Instantiate(roomVar, currentVect, Quaternion.identity, gameObject.transform);
@@ -194,7 +213,7 @@ public class Generation : MonoBehaviour
 
         //call chooseHallwayRandom
         incrementRecursionCounter(currentVect, direction, roomNumber);
-        //currentVect += getRoomInfo((direction == "right" || direction == "left") || (direction == "top" || direction == "bottom") ? ((direction == "right") ? 1 : 2) : ((direction == "top") ? 3 : 4))
+        //currentVect += getRoomInfo((direction == "right" || direction == "left") || (direction == "up" || direction == "down") ? ((direction == "right") ? 1 : 2) : ((direction == "up") ? 3 : 4))
     }
 
     int chooseRoomRandom()
@@ -210,7 +229,7 @@ public class Generation : MonoBehaviour
         //array of rooms
         Vector2[,] roomArray = new Vector2[,]
         {
-            //room dimensions, dirToRight, dirToLeft, dirToTop, dirToBottom
+            //room dimensions, dirToRight, dirToLeft, dirToup, dirTodown
             {new Vector2(6, 6),new Vector2(3, 0),new Vector2(-4, 0),new Vector2(0, 3),new Vector2(0, -4)},
             {new Vector2(8, 8),new Vector2(4, 0),new Vector2(-5, 0),new Vector2(0, 4),new Vector2(0, -5)},
             {new Vector2(12,14), new Vector2(5, 1), new Vector2(-8, -1), new Vector2(-1, 6), new Vector2(-1, -9)}
@@ -233,8 +252,8 @@ public class Generation : MonoBehaviour
         recursions++;
         if (recursions >= targetRecursions)
         {
-            Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions + 1));
-            stopRecursions();
+            Debug.Log("Algorithm supping. Should be this many rooms: " + (targetRecursions + 1));
+            supRecursions();
         }
         else
         {
@@ -243,7 +262,7 @@ public class Generation : MonoBehaviour
         }
     }
 
-    void stopRecursions()
+    void supRecursions()
     {
         recursions = targetRecursions + 1000;
     }
