@@ -1,43 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-class BacktrackData
-{
-    public Vector2 currentVect {get;set;}
-    public string previousDirection {get;set; }
-    public int previousRoomNumber {get;set;}
-}
-
 public class Backtrack : MonoBehaviour
 {
     //creates custom array to store multiple types of data (max 50 rooms)
-    BacktrackData[] dataArray = new BacktrackData[50];
+    Tuple<Vector2, string, int>[] dataArray = new Tuple<Vector2, string, int>[50];
 
     public int pointer = 1; //next available space
 
     void start()
     {
-        dataArray[0] = new BacktrackData { currentVect = new Vector2(), previousDirection = "up", previousRoomNumber = -1 };
+        dataArray[0] = new Tuple<Vector2, string, int>(new Vector2(0,8), "up", -1);
     }
 
     public void addBacktrack(Vector2 currentVect, string previousDirection, int previousRoomNumber)
     {
-        dataArray[pointer] = new BacktrackData { currentVect = currentVect, previousDirection = previousDirection, previousRoomNumber = previousRoomNumber};
+        dataArray[pointer] = new Tuple<Vector2, string, int>(currentVect, previousDirection, previousRoomNumber);
+        pointer++;
     }
 
-    //function that returns values in array, based on the type of bakctrack (e.g. stuck or for maze bulding) and the random number of rooms it should bactrack
-    public List<object> retireveInformation(string type, int randomNumber)
+    public Tuple<Vector2, string, int> retrieveInformation(int randomNumber)
     {
-        List<object> returnList = new List<object>();
-
-        returnList.Add(dataArray[pointer-randomNumber].currentVect);
-        returnList.Add(dataArray[pointer-randomNumber].previousDirection);
-        returnList.Add(dataArray[pointer-randomNumber].previousRoomNumber);
-
-        return returnList;
+        if (randomNumber == 0)
+        {
+            return dataArray[pointer];
+        }
+        else
+        {
+            return dataArray[pointer-randomNumber];
+        }
     }
-
-    // IF ERRORS OCCUR AND NOTHING IN LOG THEN THE use of <object> above may be the reason. Mkae sure to cast objects back to their original type qhen retreieving info from this list.
 }
