@@ -9,7 +9,7 @@ public class Backtrack : MonoBehaviour
 
     public int pointer = 1; //next available space
 
-    void start()
+    void Start()
     {
         dataArray[0] = new Tuple<Vector2, string, int>(new Vector2(0,8), "up", -1);
     }
@@ -24,11 +24,11 @@ public class Backtrack : MonoBehaviour
     {
         if (randomNumber == 0)
         {
-            return dataArray[pointer];
+            return dataArray[pointer - 1];
         }
         else
         {
-            return dataArray[pointer-randomNumber];
+            return dataArray[pointer- 1 - randomNumber];
         }
     }
 }

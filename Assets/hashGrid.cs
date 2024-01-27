@@ -5,7 +5,7 @@ using UnityEngine;
 public class HashGrid : MonoBehaviour
 {
     private Hashtable hashGrid = new Hashtable();
-    public void addRoom(Vector2 currentPosition, int roomNumber, Vector2 roomDimensions)
+    public void addRoom(Vector2 currentPosition, Vector2 roomDimensions)
     {
         //get info about top bottomLeft corners of room. Iterate key adding for each coord inbetween.
         //initiate key

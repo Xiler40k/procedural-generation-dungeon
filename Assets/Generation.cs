@@ -167,16 +167,46 @@ public class Generation : MonoBehaviour
 
         Debug.Log("CurrentVect after hallway: " + currentVect);
 
-        spawnRoomRandom(currentVect, dirToExit, direction);
-
+        checkRoom(currentVect, dirToExit, direction, randomHallwayCount);
     }
 
-    // SO when left is called, because the vectors aren't similar (room is split so 3 and 4 are the dirToExit vectors), the room only needs to spawn 2to the right rather than 4 as 6 (room width - dirToExit.x = 2)
+    // so when left is called, because the vectors aren't similar (room is split so 3 and 4 are the dirToExit vectors), the room only needs to spawn 2to the right rather than 4 as 6 (room width - dirToExit.x = 2)
 
-
-    void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction)
+    void checkRoom(Vector2 currentVect, Vector2 dirToExit, string direction, int randomHallwayCount)
     {
-        int roomNumber = chooseRoomRandom();
+        var numberOfRoomsTried = 0;
+        while (numberOfRoomsTried < 3)
+        {
+            var roomNumber = 0;
+            if (numberOfRoomsTried == 0 || roomNumber < 2)
+            {
+                roomNumber = chooseRoomRandom();
+            }
+            else
+            {
+                roomNumber = roomNumber - 1;
+            }
+            var roomInformation = getRoomInfo(roomNumber - 1);
+            var roomDimensions = roomInformation[0];
+
+            //check if room will collide with anything
+            var collisionCheck = hashTable.checkRoomSpace(currentVect, roomDimensions);
+            if (collisionCheck == false)
+            {
+                spawnRoomRandom(currentVect, dirToExit, direction, roomNumber);
+                break;
+            }
+            else
+            {
+                numberOfRoomsTried++;
+            }
+        }
+        deleteHallway(currentVect, dirToExit, direction, randomHallwayCount);
+        
+    }
+
+    void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction, int roomNumber)
+    {
         GameObject roomVar = Resources.Load<GameObject>("Rooms/Room" + roomNumber);
         //gets all relevant room Info
         var roomInformation = getRoomInfo(roomNumber - 1);
@@ -210,6 +240,8 @@ public class Generation : MonoBehaviour
         }
 
         Debug.Log("The CurrentVect of the the most recently installed room is " + currentVect);
+
+        hashTable.addRoom(currentVect, roomDimensions);
 
         //call chooseHallwayRandom
         incrementRecursionCounter(currentVect, direction, roomNumber);
@@ -246,6 +278,31 @@ public class Generation : MonoBehaviour
     }
 
 
+
+    public Stack<GameObject> lastObjectInstantiated = new Stack<GameObject>();
+    void addObjectToStack(GameObject objectAdd)
+    {
+        lastObjectInstantiated.Push(objectAdd);
+    }
+    void deleteHallway(Vector2 currentvect, Vector2 dirToExit, string direction, int hallwayLength)
+    {
+        for (var i = 0; i < hallwayLength; i++)
+        {
+            GameObject objectDestroy = lastObjectInstantiated.Pop();
+            Destroy(objectDestroy);
+        }
+        var backInfo = backtrack.retrieveInformation(0);
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3);
+    }
+    void deleteRoom()
+    {
+        GameObject objectDestroy = lastObjectInstantiated.Pop();
+        Destroy(objectDestroy);
+    }
+
+
+
+
     void incrementRecursionCounter(Vector2 currentVect, string direction, int previousRoomNumber)
     {
         Debug.Log("recursion " + recursions + " has been completed");
@@ -266,7 +323,11 @@ public class Generation : MonoBehaviour
     {
         recursions = targetRecursions + 1000;
     }
+
+    
 }
+
+
 
 //ERRORS
 // ROOMS spawn perfectly unless you go in the same direction twice
