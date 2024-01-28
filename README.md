@@ -4,8 +4,8 @@ Open source code to my procedural generation game inspired by Enter the gungeon 
 
 To do for Christmas:
 
-- [ ] Build algorithm itself
-- [ ] Sort out very basic combat system and gate system to win game
+- [x] Build algorithm itself
+- [ ] Sort out very basic combat system and gate system to win game - uh oh not done
 
 After Christmas:
 
