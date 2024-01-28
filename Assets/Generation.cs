@@ -21,6 +21,9 @@ public class Generation : MonoBehaviour
         hashTable = GameObject.FindGameObjectWithTag("HashTable").GetComponent<HashGrid>();
         hashTable.testing(1);
 
+        //add starting room to hashTable
+        hashTable.addRoom(new Vector2(0, 0), new Vector2(26, 12));
+
 
         var spawnRoom = Instantiate(startingRoom, new Vector2(0, 0), Quaternion.identity, gameObject.transform); //doesn't need to be a variable
         var startingVect = new Vector2(0, 8);
@@ -250,6 +253,7 @@ public class Generation : MonoBehaviour
 
     int chooseRoomRandom()
     {
+        //has to be manually added to increase number of rooms.
         var roomNumber = UnityEngine.Random.Range(1, 4);
         return roomNumber;
     }
@@ -309,8 +313,8 @@ public class Generation : MonoBehaviour
         recursions++;
         if (recursions >= targetRecursions)
         {
-            Debug.Log("Algorithm supping. Should be this many rooms: " + (targetRecursions + 1));
-            supRecursions();
+            Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions + 1));
+            stopRecursions();
         }
         else
         {
@@ -319,9 +323,10 @@ public class Generation : MonoBehaviour
         }
     }
 
-    void supRecursions()
+    void stopRecursions()
     {
         recursions = targetRecursions + 1000;
+        hashTable.getCount();
     }
 
     

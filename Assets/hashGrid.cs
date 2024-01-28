@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HashGrid : MonoBehaviour
 {
-    private Hashtable hashGrid = new Hashtable();
+    private Dictionary<int, int> hashGrid = new Dictionary<int, int>();
     public void addRoom(Vector2 currentPosition, Vector2 roomDimensions)
     {
         //get info about top bottomLeft corners of room. Iterate key adding for each coord inbetween.
@@ -169,7 +170,11 @@ public class HashGrid : MonoBehaviour
             Debug.Log("collision detected");
             return true;
         }
-
         return false;
+    }
+
+    private void checkCount()
+    {
+        Debug.Log("count is " + hashGrid.Count);
     }
 }
