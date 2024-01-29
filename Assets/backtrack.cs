@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Backtrack : MonoBehaviour
 {
-    //creates custom array to store multiple types of data (max 50 rooms)
+    //creates custom array to store multiple types of data (max 50 rooms atm)
     Tuple<Vector2, string, int>[] dataArray = new Tuple<Vector2, string, int>[50];
 
     public int pointer = 1; //next available space
@@ -30,5 +30,10 @@ public class Backtrack : MonoBehaviour
         {
             return dataArray[pointer- 1 - randomNumber];
         }
+    }
+
+    public void testing(int param)
+    {
+        Debug.Log("Succesffuly accessed backtrack with parameter " + param);
     }
 }
