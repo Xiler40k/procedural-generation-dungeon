@@ -41,6 +41,33 @@ public class HashGrid : MonoBehaviour
         }
     } 
 
+    public void removeRoom(Vector2 currentPosition, Vector2 roomDimensions)
+    {
+        int key = 0;
+
+        //find bottom left corner of room
+        if (roomDimensions.x % 2 == 1)
+        {
+            roomDimensions.x -= 1;
+        }
+
+        if (roomDimensions.y % 2 == 1)
+        {
+            roomDimensions.y -= 1;
+        }
+        var bottomLeftCorner = new Vector2(currentPosition.x - roomDimensions.x/2, currentPosition.y - roomDimensions.y/2);
+
+        for (int i = 0;  i < roomDimensions.x; i++)
+        {
+            for (int j = 0; j < roomDimensions.y; j++)
+            {
+                key = generateKey(new Vector2(bottomLeftCorner.x + i, bottomLeftCorner.y + j));
+                hashGrid.Remove(key);
+            }
+        }
+
+    }
+
     public void testing(int param)
     {
         Debug.Log("Succesffuly accessed hash grid with parameter " + param);
@@ -103,6 +130,7 @@ public class HashGrid : MonoBehaviour
 //check grid for all collisions of a room
     public bool checkRoomSpace(Vector2 currentPosition, Vector2 roomDimensions, Vector2 dirToCentre, string direction)
     {
+
         //find bottom left corner of room
         if (roomDimensions.x % 2 == 1)
         {
@@ -114,17 +142,8 @@ public class HashGrid : MonoBehaviour
             roomDimensions.y -= 1;
         }
 
-        //adjustment means that there is no overlap between adjacent rooms and hallways
-        var adjustment = 0;
-        if (direction == "up" || direction == "right")
-        {
-            adjustment = 1;
-        }
-        else if (direction == "down" || direction == "left")
-        {
-            adjustment = -1;
-        }
-        var bottomLeftCorner = new Vector2((currentPosition.x + dirToCentre.x + adjustment) - roomDimensions.x/2, (currentPosition.y + dirToCentre.y + adjustment) - roomDimensions.y/2);
+        // + adjustment in brackets??????
+        var bottomLeftCorner = new Vector2((currentPosition.x + dirToCentre.x) - roomDimensions.x/2, (currentPosition.y + dirToCentre.y) - roomDimensions.y/2);
 
         // check collisions for all possible walls. 
         for (int i = 0;  i < roomDimensions.x; i++)

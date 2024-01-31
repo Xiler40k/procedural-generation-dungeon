@@ -9,10 +9,9 @@ public class Generation : MonoBehaviour
     public GameObject vCorridor; 
     public GameObject hCorridor;
     private int recursions = 0;
-    private int targetRecursions = 6; // this is number of desired rooms
+    private int targetRecursions = 5; // this is desired number of rooms per path iteration. 
 
     HashGrid hashTable;
-
     Backtrack backtrack;
 
     // Start is called before the first frame update
@@ -30,17 +29,31 @@ public class Generation : MonoBehaviour
 
         var spawnRoom = Instantiate(startingRoom, new Vector2(0, 0), Quaternion.identity, gameObject.transform); //doesn't need to be a variable
         var startingVect = new Vector2(0, 8);
+
         //in this starting case, -1 prompts "up" to instead rig the alogithm to go to up instead of avoid it.
+        //temp add a box around path 2 entrance to collider.
+        hashTable.addRoom(new Vector2(-20, 0), new Vector2(16, 14));
+
         chooseHallwayRandom(startingVect, "up", -1);
         clearStack();
+
+        //remove path 2's entrance collider and add path 3 entrance collider
+        hashTable.removeRoom(new Vector2(-20, 0), new Vector2(16, 14));
+        hashTable.addRoom(new Vector2(0, -12), new Vector2(14, 16));
+
         startingVect = new Vector2(-14, 0);
         chooseHallwayRandom(startingVect, "left", -1);
         clearStack();
+
+        //remove path 3's entrance collider
+        hashTable.removeRoom(new Vector2(0, -12), new Vector2(14, 16));
+
         startingVect = new Vector2(0, -7);
         chooseHallwayRandom(startingVect, "down", -1);
+        
     }
 
-    //removed update{} method
+    //removed update() method
 
     void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber)
     {
@@ -52,7 +65,6 @@ public class Generation : MonoBehaviour
         var dirChosen = false; //don't think I need it?
         var dirToExit = new Vector2(0,0);
         Debug.Log("Begining direction selection. Current vect is:" + currentVect);
-
         int directionN = 0;
 
         while (dirChosen == false)
@@ -224,7 +236,6 @@ public class Generation : MonoBehaviour
             var roomInformation = getRoomInfo(roomNumber - 1);
             var roomDimensions = roomInformation[0];
 
-            //var dirToCentre = roomInformation[(direction == "right" || direction == "left") || (direction == "up" || direction == "down") ? ((direction == "right") ? 2 : 1) : ((direction == "up") ? 4 : 3)];
             var dirToCentre = new Vector2(0, 0);
             if (direction == "right")
             {
@@ -328,7 +339,7 @@ public class Generation : MonoBehaviour
             //room dimensions, dirToRight, dirToLeft, dirToUp, dirToDown
             {new Vector2(6, 6),new Vector2(3, 0),new Vector2(-4, 0),new Vector2(0, 3),new Vector2(0, -4)},
             {new Vector2(8, 8),new Vector2(4, 0),new Vector2(-5, 0),new Vector2(0, 4),new Vector2(0, -5)},
-            {new Vector2(12,14), new Vector2(5, 1), new Vector2(-8, -1), new Vector2(-1, 6), new Vector2(-1, -9)}
+            {new Vector2(12,14), new Vector2(6, 2), new Vector2(-7, 0), new Vector2(0, 7), new Vector2(0, -8)}
         };
 
         List<Vector2> roomInfoList = new List<Vector2>();
@@ -399,8 +410,6 @@ public class Generation : MonoBehaviour
         int count = hashTable.hashGrid.Count;
         Debug.Log("The number of hashTable entries is " + count);
     }
-
-    
 }
 
 
