@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class Generation : MonoBehaviour
 
     HashGrid hashTable;
     Backtrack backtrack;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,29 +35,44 @@ public class Generation : MonoBehaviour
         //in this starting case, -1 prompts "up" to instead rig the alogithm to go to up instead of avoid it.
         //temp add a box around path 2 entrance to collider.
         hashTable.addRoom(new Vector2(-20, 0), new Vector2(16, 14));
+        resetTriedArray();
 
-        chooseHallwayRandom(startingVect, "up", -1);
+        chooseHallwayRandom(startingVect, "up", -1, true);
         clearStack();
+        resetTriedArray();
+        recursions = 0;
 
         //remove path 2's entrance collider and add path 3 entrance collider
         hashTable.removeRoom(new Vector2(-20, 0), new Vector2(16, 14));
         hashTable.addRoom(new Vector2(0, -12), new Vector2(14, 16));
 
         startingVect = new Vector2(-14, 0);
-        chooseHallwayRandom(startingVect, "left", -1);
+        chooseHallwayRandom(startingVect, "left", -1, true);
         clearStack();
+        resetTriedArray();
+        recursions = 0;
 
         //remove path 3's entrance collider
         hashTable.removeRoom(new Vector2(0, -12), new Vector2(14, 16));
 
         startingVect = new Vector2(0, -7);
-        chooseHallwayRandom(startingVect, "down", -1);
+        chooseHallwayRandom(startingVect, "down", -1, true);
         
     }
 
     //removed update() method
 
-    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber)
+    public int[] triedArray = new int[4];
+    //set all values i array to 0
+    void resetTriedArray()
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            triedArray[i] = 0;
+        }
+    }
+
+    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isFirstIteration)
     {
         //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice)
         backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
@@ -66,6 +83,29 @@ public class Generation : MonoBehaviour
         var dirToExit = new Vector2(0,0);
         Debug.Log("Begining direction selection. Current vect is:" + currentVect);
         int directionN = 0;
+
+        var randomBacktrack = UnityEngine.Random.Range(1, 101);
+        //checks if all 3 possible directions have been checked OR if random backtrack and its not the first room being spawned.
+
+        if ((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) == 3)
+        {
+            Debug.Log("All directions have been tried. Backtracking");
+            generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
+            return;
+        } 
+        if (randomBacktrack < 40 && recursions > 2)
+        {
+            Debug.Log("Random backtrack chosen");
+            generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
+            return;
+        }
+        else if (isFirstIteration == true)
+        {
+            Debug.Log("First iteration. Choosing random direction");
+            resetTriedArray();
+        }
+
+
 
         while (dirChosen == false)
         {
@@ -127,12 +167,24 @@ public class Generation : MonoBehaviour
 
 
         var randomHallwayCount = UnityEngine.Random.Range(2, 7);
-        checkHallway(currentVect, dirToExit, direction, randomHallwayCount);
+        checkHallway(currentVect, dirToExit, direction, directionN, randomHallwayCount);
 
         //spawnHallwayRandom(currentVect, dirToExit, direction);
     }
 
-    void checkHallway(Vector2 currentVect, Vector2 dirToExit, string direction, int randomHallwayCount)
+    void generationBacktrack(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isRandom)
+    {
+        closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection);
+        System.Tuple<Vector2, string, int> backInfo;
+        if (isRandom) {
+            backInfo = backtrack.retrieveInformation(UnityEngine.Random.Range(1, recursions-1));
+        } else {
+            backInfo = backtrack.retrieveInformation(1);
+        }
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, false);
+    }
+
+    void checkHallway(Vector2 currentVect, Vector2 dirToExit, string direction, int directionN, int randomHallwayCount)
     {
         
         var collisionCheck = hashTable.checkHallwaySpace(currentVect, direction, randomHallwayCount, dirToExit);
@@ -140,7 +192,8 @@ public class Generation : MonoBehaviour
         {
             deleteExits();
             var backInfo = backtrack.retrieveInformation(0);
-            chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3);
+            triedArray[directionN - 1] = 1;
+            chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, false);
         }
         else
         {
@@ -274,7 +327,7 @@ public class Generation : MonoBehaviour
         deleteExits();
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
-        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3);
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, true);
     }
 
     void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction, int roomNumber)
@@ -317,7 +370,6 @@ public class Generation : MonoBehaviour
 
         hashTable.addRoom(currentVect, roomDimensions);
 
-        //call chooseHallwayRandom
         incrementRecursionCounter(currentVect, direction, roomNumber);
         //currentVect += getRoomInfo((direction == "right" || direction == "left") || (direction == "up" || direction == "down") ? ((direction == "right") ? 1 : 2) : ((direction == "up") ? 3 : 4))
     }
@@ -400,7 +452,7 @@ public class Generation : MonoBehaviour
         else
         {
             Debug.Log("Room " + (recursions) + "/" + (targetRecursions) + "spawned");
-            chooseHallwayRandom(currentVect, direction, previousRoomNumber);
+            chooseHallwayRandom(currentVect, direction, previousRoomNumber, true);
         }
     }
 
@@ -410,7 +462,42 @@ public class Generation : MonoBehaviour
         int count = hashTable.hashGrid.Count;
         Debug.Log("The number of hashTable entries is " + count);
     }
+
+    void closeCurrentExits(Vector2 currentVect, List<Vector2> dirToExitList,  string previousDirection)
+    {
+        var exitPrefab = Resources.Load<GameObject>("Exits/Exit");
+        if (previousDirection != "left" )
+        {
+            var vectToClose = currentVect + dirToExitList[1] + new Vector2(-1, 0);
+            exitPrefab = Resources.Load<GameObject>("Exits/Exit1");
+            var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            // no need for addObjectToStack(exit); as the exit is not part of the path and the objects will not need to be deleted
+        }
+        if (previousDirection != "right")
+        {
+            var vectToClose = currentVect + dirToExitList[2] + new Vector2(1, 0);
+            exitPrefab = Resources.Load<GameObject>("Exits/Exit2");
+            var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            
+        }
+        if (previousDirection != "down")
+        {
+            var vectToClose = currentVect + dirToExitList[3] + new Vector2(0, -1);
+            exitPrefab = Resources.Load<GameObject>("Exits/Exit3");
+            var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            
+        }
+        if (previousDirection != "up")
+        {
+            var vectToClose = currentVect + dirToExitList[4] + new Vector2(0, 1);
+            exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
+            var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            
+        }
+    }
 }
+
+
 
 
 

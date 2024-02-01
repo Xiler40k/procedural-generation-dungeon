@@ -28,7 +28,7 @@ public class Backtrack : MonoBehaviour
         }
         else
         {
-            return dataArray[pointer- 1 - randomNumber];
+            return dataArray[pointer - 1 - randomNumber];
         }
     }
 
