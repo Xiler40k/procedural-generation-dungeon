@@ -10,10 +10,12 @@ public class Generation : MonoBehaviour
     public GameObject vCorridor; 
     public GameObject hCorridor;
     private int recursions = 0;
-    private int targetRecursions = 5; // this is desired number of rooms per path iteration. 
+    private int targetRecursions = 6; // this is desired number of rooms per path iteration. 
 
     HashGrid hashTable;
     Backtrack backtrack;
+
+    bool isBacktracking = false;
 
 
     // Start is called before the first frame update
@@ -37,7 +39,8 @@ public class Generation : MonoBehaviour
         hashTable.addRoom(new Vector2(-20, 0), new Vector2(16, 14));
         resetTriedArray();
 
-        chooseHallwayRandom(startingVect, "up", -1, true);
+        isBacktracking = false;
+        chooseHallwayRandom(startingVect, "up", -1, isBacktracking);
         clearStack();
         resetTriedArray();
         recursions = 0;
@@ -47,7 +50,8 @@ public class Generation : MonoBehaviour
         hashTable.addRoom(new Vector2(0, -12), new Vector2(14, 16));
 
         startingVect = new Vector2(-14, 0);
-        chooseHallwayRandom(startingVect, "left", -1, true);
+        isBacktracking = false;
+        chooseHallwayRandom(startingVect, "left", -1, isBacktracking);
         clearStack();
         resetTriedArray();
         recursions = 0;
@@ -56,7 +60,8 @@ public class Generation : MonoBehaviour
         hashTable.removeRoom(new Vector2(0, -12), new Vector2(14, 16));
 
         startingVect = new Vector2(0, -7);
-        chooseHallwayRandom(startingVect, "down", -1, true);
+        isBacktracking = false;
+        chooseHallwayRandom(startingVect, "down", -1, isBacktracking);
         
     }
 
@@ -72,10 +77,13 @@ public class Generation : MonoBehaviour
         }
     }
 
-    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isFirstIteration)
+    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking)
     {
-        //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice)
-        backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
+        //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice) if not backtracking or rechecking hallways for a room
+        if (triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3] == 0 && isBacktracking == false)
+        {
+            backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
+        }
 
         var direction = "";
         // This next line should go into an array along with height, vector to centre.m Also they dont have to be vectors but you could combine to make into a single vector.
@@ -93,16 +101,11 @@ public class Generation : MonoBehaviour
             generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
             return;
         } 
-        if (randomBacktrack < 40 && recursions > 2)
+        if (randomBacktrack < 40 && recursions > 2) // make not possible if already in backtrack process
         {
             Debug.Log("Random backtrack chosen");
             generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
             return;
-        }
-        else if (isFirstIteration == true)
-        {
-            Debug.Log("First iteration. Choosing random direction");
-            resetTriedArray();
         }
 
 
@@ -118,28 +121,28 @@ public class Generation : MonoBehaviour
                 recursions = 0;
                 break;
             }
-            else if (directionNumber == 1 && previousDirection != "left")
+            else if (directionNumber == 1 && previousDirection != "left" && triedArray[0] != 1)
             {
                 direction = "right";
                 directionN = 1;
                 dirChosen = true;
                 break;
             }
-            else if (directionNumber == 2 && previousDirection != "right")
+            else if (directionNumber == 2 && previousDirection != "right" && triedArray[1] != 1)
             {
                 direction = "left";
                 directionN = 2;
                 dirChosen = true;
                 break;
             }
-            else if (directionNumber == 3 && previousDirection != "down")
+            else if (directionNumber == 3 && previousDirection != "down" && triedArray[2] != 1)
             {
                 direction = "up";
                 directionN = 3;
                 dirChosen = true;
                 break;
             }
-            else if (directionNumber == 4 && previousDirection != "up")
+            else if (directionNumber == 4 && previousDirection != "up" && triedArray[3] != 1)
             {
                 direction = "down";
                 directionN = 4;
@@ -158,7 +161,9 @@ public class Generation : MonoBehaviour
             //takes the newly stated list and gets the relevant peice of information from it. 
             dirToExit = dirToExitList[directionN];
             //call method, passing in currentVect and the other stuff.
-            closeExits(currentVect, dirToExitList, directionN, previousDirection);
+            if (isBacktracking == false){
+                closeExits(currentVect, dirToExitList, directionN, previousDirection);
+            }
         }
         else
         {
@@ -181,7 +186,8 @@ public class Generation : MonoBehaviour
         } else {
             backInfo = backtrack.retrieveInformation(1);
         }
-        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, false);
+        isBacktracking = true;
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking);
     }
 
     void checkHallway(Vector2 currentVect, Vector2 dirToExit, string direction, int directionN, int randomHallwayCount)
@@ -193,7 +199,9 @@ public class Generation : MonoBehaviour
             deleteExits();
             var backInfo = backtrack.retrieveInformation(0);
             triedArray[directionN - 1] = 1;
-            chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, false);
+            //now while the 4th parameter (isBacktracking) is true, this si only to prevent another copy of the data being added to the backtrack system.
+            isBacktracking = true;
+            chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking);
         }
         else
         {
@@ -327,7 +335,8 @@ public class Generation : MonoBehaviour
         deleteExits();
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
-        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, true);
+        isBacktracking = false;
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking);
     }
 
     void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction, int roomNumber)
@@ -452,7 +461,8 @@ public class Generation : MonoBehaviour
         else
         {
             Debug.Log("Room " + (recursions) + "/" + (targetRecursions) + "spawned");
-            chooseHallwayRandom(currentVect, direction, previousRoomNumber, true);
+            isBacktracking = false;
+            chooseHallwayRandom(currentVect, direction, previousRoomNumber, isBacktracking);
         }
     }
 
@@ -466,7 +476,7 @@ public class Generation : MonoBehaviour
     void closeCurrentExits(Vector2 currentVect, List<Vector2> dirToExitList,  string previousDirection)
     {
         var exitPrefab = Resources.Load<GameObject>("Exits/Exit");
-        if (previousDirection != "left" )
+        if (previousDirection != "left")
         {
             var vectToClose = currentVect + dirToExitList[1] + new Vector2(-1, 0);
             exitPrefab = Resources.Load<GameObject>("Exits/Exit1");
