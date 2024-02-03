@@ -80,8 +80,7 @@ public class Generation : MonoBehaviour
     void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking)
     {
         //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice) if not backtracking or rechecking hallways for a room
-        if (triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3] == 0 && isBacktracking == false)
-        {
+        if(!isBacktracking) {
             backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
         }
 
@@ -161,9 +160,7 @@ public class Generation : MonoBehaviour
             //takes the newly stated list and gets the relevant peice of information from it. 
             dirToExit = dirToExitList[directionN];
             //call method, passing in currentVect and the other stuff.
-            if (isBacktracking == false){
-                closeExits(currentVect, dirToExitList, directionN, previousDirection);
-            }
+            closeExits(currentVect, dirToExitList, directionN, previousDirection);
         }
         else
         {
@@ -456,6 +453,7 @@ public class Generation : MonoBehaviour
         if (recursions >= targetRecursions)
         {
             Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions));
+            closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), direction);
             stopRecursions();
         }
         else
@@ -471,6 +469,7 @@ public class Generation : MonoBehaviour
         recursions = targetRecursions + 1000;
         int count = hashTable.hashGrid.Count;
         Debug.Log("The number of hashTable entries is " + count);
+        backtrack.printAllTuples();
     }
 
     void closeCurrentExits(Vector2 currentVect, List<Vector2> dirToExitList,  string previousDirection)

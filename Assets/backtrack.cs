@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//don't need anymore
+using System.Text;
 public class Backtrack : MonoBehaviour
 {
     //creates custom array to store multiple types of data (max 50 rooms atm)
@@ -35,5 +37,16 @@ public class Backtrack : MonoBehaviour
     public void testing(int param)
     {
         Debug.Log("Succesffuly accessed backtrack with parameter " + param);
+    }
+
+    public void printAllTuples()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < pointer; i++)
+        {
+            var tuple = dataArray[i];
+            sb.AppendLine($"Index: {i}, Vector2: {tuple.Item1}, Direction: {tuple.Item2}, Room Number: {tuple.Item3}");
+        }
+        Debug.Log(sb.ToString());
     }
 }
