@@ -6,6 +6,7 @@ TagManager:
   tags:
   - HashTable
   - Backtrack
+  - ExitTag
   layers:
   - Default
   - TransparentFX

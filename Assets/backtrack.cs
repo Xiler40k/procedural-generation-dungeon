@@ -7,7 +7,7 @@ using System.Text;
 public class Backtrack : MonoBehaviour
 {
     //creates custom array to store multiple types of data (max 50 rooms atm)
-    Tuple<Vector2, string, int>[] dataArray = new Tuple<Vector2, string, int>[50];
+    Tuple<Vector2, string, int>[] dataArray = new Tuple<Vector2, string, int>[100];
 
     public int pointer = 1; //next available space
 

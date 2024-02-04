@@ -53,7 +53,6 @@ public class Generation : MonoBehaviour
         isBacktracking = false;
         chooseHallwayRandom(startingVect, "left", -1, isBacktracking);
         clearStack();
-        resetTriedArray();
         recursions = 0;
 
         //remove path 3's entrance collider
@@ -61,6 +60,7 @@ public class Generation : MonoBehaviour
 
         startingVect = new Vector2(0, -7);
         isBacktracking = false;
+        resetTriedArray();
         chooseHallwayRandom(startingVect, "down", -1, isBacktracking);
         
     }
@@ -80,7 +80,7 @@ public class Generation : MonoBehaviour
     void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking)
     {
         //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice) if not backtracking or rechecking hallways for a room
-        if(!isBacktracking) {
+        if (!isBacktracking) {
             backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
         }
 
@@ -502,6 +502,23 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             
+        }
+    }
+
+    void DeleteExitAt(Vector2 coordinates)
+    {
+        Collider2D[] colliders = Physics2D.OverlapPointAll(coordinates);
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag("ExitTag"))
+            {
+                GameObject exitObject = collider.gameObject;
+                lastObjectInstantiated.Pop(); // Remove the object from your stack.
+
+                Destroy(exitObject); // Destroy the exit object.
+                break; 
+            }
         }
     }
 }
