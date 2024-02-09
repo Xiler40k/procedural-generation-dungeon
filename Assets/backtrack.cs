@@ -18,6 +18,11 @@ public class Backtrack : MonoBehaviour
 
     public void addBacktrack(Vector2 currentVect, string previousDirection, int previousRoomNumber)
     {
+        /* var tupleToCheck = dataArray[pointer - 1];
+        if (tupleToCheck.Item1 == currentVect)
+        {
+            return;
+        } */
         dataArray[pointer] = new Tuple<Vector2, string, int>(currentVect, previousDirection, previousRoomNumber);
         pointer++;
     }
@@ -48,5 +53,14 @@ public class Backtrack : MonoBehaviour
             sb.AppendLine($"Index: {i}, Vector2: {tuple.Item1}, Direction: {tuple.Item2}, Room Number: {tuple.Item3}");
         }
         Debug.Log(sb.ToString());
+    }
+
+    public void clearBacktrack()
+    {
+        for (int i = 0; i < pointer; i++)
+        {
+            dataArray[i] = null;
+        }
+        pointer = 0;
     }
 }

@@ -218,4 +218,10 @@ public class HashGrid : MonoBehaviour
     {
         Debug.Log("count is " + hashGrid.Count);
     }
+
+    public void clearHashTable()
+    {
+        hashGrid.Clear();
+    }
+        
 }
