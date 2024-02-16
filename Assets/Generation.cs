@@ -17,6 +17,8 @@ public class Generation : MonoBehaviour
 
     bool isBacktracking = false;
 
+    public Vector2 storedExitCoords;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,9 +78,6 @@ public class Generation : MonoBehaviour
         }
     }
 
-
-
-
     void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking)
     {
         //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice) if not backtracking or rechecking hallways for a room
@@ -104,12 +103,14 @@ public class Generation : MonoBehaviour
 
         if ((randomBacktrack < 40 && recursions > 2)) // make not possible if already in backtrack process
         {
-            Debug.Log("Random backtrack chosen");
-            generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
-            return;
+            if (isBacktracking) {
+
+            } else {
+                Debug.Log("Random backtrack chosen");
+                generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
+                return;
+            }
         }
-
-
 
         while (dirChosen == false)
         {
@@ -161,7 +162,6 @@ public class Generation : MonoBehaviour
             //takes the newly stated list and gets the relevant peice of information from it. 
             dirToExit = dirToExitList[directionN];
             //call method, passing in currentVect and the other stuff.
-            closeExits(currentVect, dirToExitList, directionN, previousDirection);
             if (isBacktracking == true)
             {
                 var vectToAdd = new Vector2(0, 0);
@@ -176,7 +176,13 @@ public class Generation : MonoBehaviour
                 }
 
                 //DeleteExitAt(currentVect + dirToExit + vectToAdd);
-                Debug.Log("The exit to delete is at " + (currentVect + dirToExit + vectToAdd));
+                storedExitCoords = currentVect + dirToExit + vectToAdd;
+                Debug.Log("Exit added to delete later" + storedExitCoords);
+                addObjectToStack(null);
+                addObjectToStack(null);
+                addObjectToStack(null);
+            } else {
+                closeExits(currentVect, dirToExitList, directionN, previousDirection);
             }
         }
         else
@@ -234,6 +240,8 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit1");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+            
+            backtrack.addExitObject(vectToClose, exit);
         }
         if (directionN != 2 && previousDirection != "right")
         {
@@ -241,6 +249,8 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit2");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+
+            backtrack.addExitObject(vectToClose, exit);
         }
         if (directionN != 3 && previousDirection != "down")
         {
@@ -248,6 +258,8 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit3");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+
+            backtrack.addExitObject(vectToClose, exit);
         }
         if (directionN != 4 && previousDirection != "up")
         {
@@ -255,6 +267,8 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+
+            backtrack.addExitObject(vectToClose, exit);
         }
     }
 
@@ -338,6 +352,9 @@ public class Generation : MonoBehaviour
             {
                 
                 spawnRoomRandom(currentVect, dirToExit, direction, roomNumber);
+
+                //get info about room exit to open from earlier and open it now.
+                backtrack.removeExitObject(storedExitCoords);
                 return;
             }
             else
@@ -352,7 +369,7 @@ public class Generation : MonoBehaviour
         deleteExits();
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
-        isBacktracking = false;
+        isBacktracking = true;
         chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking);
     }
 
@@ -523,23 +540,6 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             
-        }
-    }
-
-    void DeleteExitAt(Vector2 coordinates)
-    {
-        Collider2D[] colliders = Physics2D.OverlapPointAll(coordinates);
-
-        foreach (Collider2D collider in colliders)
-        {
-            if (collider.CompareTag("ExitTag"))
-            {
-                GameObject exitObject = collider.gameObject;
-                lastObjectInstantiated.Pop(); // Remove the object from your stack.
-
-                Destroy(exitObject); // Destroy the exit object.
-                break; 
-            }
         }
     }
 

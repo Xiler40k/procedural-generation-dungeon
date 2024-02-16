@@ -63,4 +63,36 @@ public class Backtrack : MonoBehaviour
         }
         pointer = 0;
     }
+
+    // EXIT STUFF
+
+    Dictionary<int, GameObject> exitObjects = new Dictionary<int, GameObject>();
+
+    public int generateKey(Vector2 currentPosition)
+    {
+        int key = ((int)currentPosition.x * 10000) + (int)currentPosition.y;
+        return key;
+    }
+
+    public void addExitObject(Vector2 coordinates, GameObject exitObject)
+    {
+        int key = generateKey(coordinates);
+        exitObjects[key] = exitObject;
+    }
+
+    public void removeExitObject(Vector2 coordinates)
+    {
+        
+        int key = generateKey(coordinates);
+
+        if (exitObjects.ContainsKey(key))
+        {
+            GameObject exit = exitObjects[key];
+            Destroy(exit);
+            Debug.Log("Exit removed at" + coordinates);
+        } else {
+            Debug.Log("Key not found");
+            return;
+        }
+    }
 }
