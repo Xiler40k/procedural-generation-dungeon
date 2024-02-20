@@ -18,6 +18,7 @@ public class Generation : MonoBehaviour
     bool isBacktracking = false;
 
     public Vector2 storedExitCoords;
+    public int allDirectionsTriedCounter = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -38,12 +39,12 @@ public class Generation : MonoBehaviour
         //in this starting case, -1 prompts "up" to instead rig the alogithm to go to up instead of avoid it.
         //temp add a box around path 2 entrance to collider.
         hashTable.addRoom(new Vector2(-20, 0), new Vector2(16, 14));
-        resetTriedArray();
+        //resetTriedArray();
 
         isBacktracking = false;
         chooseHallwayRandom(startingVect, "up", -1, isBacktracking);
         clearStack();
-        resetTriedArray();
+        //resetTriedArray();
         recursions = 0;
 
         //remove path 2's entrance collider and add path 3 entrance collider
@@ -61,7 +62,7 @@ public class Generation : MonoBehaviour
 
         startingVect = new Vector2(0, -7);
         isBacktracking = false;
-        resetTriedArray();
+        //resetTriedArray();
         chooseHallwayRandom(startingVect, "down", -1, isBacktracking);
         
     }
@@ -70,20 +71,14 @@ public class Generation : MonoBehaviour
 
     public int[] triedArray = new int[4];
     //set all values i array to 0
-    void resetTriedArray()
-    {
-        for (var i = 0; i < 4; i++)
-        {
-            triedArray[i] = 0;
-        }
-    }
 
     void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking)
     {
         //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice) if not backtracking or rechecking hallways for a room
         backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
-
         var direction = "";
+
+        
         // This next line should go into an array along with height, vector to centre.m Also they dont have to be vectors but you could combine to make into a single vector.
         var dirChosen = false; //don't think I need it?
         var dirToExit = new Vector2(0,0);
@@ -93,6 +88,15 @@ public class Generation : MonoBehaviour
 
         var randomBacktrack = UnityEngine.Random.Range(1, 101);
         //checks if all 3 possible directions have been checked OR if random backtrack and its not the first room being spawned.
+
+        if (backtrack.dirDictKeyExists(currentVect) == true)
+        {
+            triedArray = backtrack.getDictArray(currentVect);
+        }
+        else
+        {
+            triedArray = new int[4];
+        }
 
         if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3))
         {
@@ -153,6 +157,7 @@ public class Generation : MonoBehaviour
             }
         }
         Debug.Log("Direction chosen is " + direction);
+        backtrack.writeDirectionToDictionary(currentVect, direction);
 
         //if -1 is passed, then the default first room is chosen
         if (previousRoomNumber != -1)
@@ -222,7 +227,7 @@ public class Generation : MonoBehaviour
             //var backInfo = backtrack.retrieveInformation(0);
             triedArray[directionN - 1] = 1;
             //now while the 4th parameter (isBacktracking) is true, this si only to prevent another copy of the data being added to the backtrack system.
-            isBacktracking = true;
+            isBacktracking = false;
             chooseHallwayRandom(currentVect, previousDirection, previousRoomNumber, isBacktracking);
         }
         else
@@ -350,11 +355,14 @@ public class Generation : MonoBehaviour
             var collisionCheck = hashTable.checkRoomSpace(currentVect, roomDimensions, dirToCentre, direction);
             if (collisionCheck == false)
             {
-                
+                if (isBacktracking == true)
+                {
+                    backtrack.removeExitObject(storedExitCoords);
+                    Debug.Log("Exit deleted at" + storedExitCoords);
+                }
                 spawnRoomRandom(currentVect, dirToExit, direction, roomNumber);
 
                 //get info about room exit to open from earlier and open it now.
-                backtrack.removeExitObject(storedExitCoords);
                 return;
             }
             else
@@ -490,7 +498,8 @@ public class Generation : MonoBehaviour
         if (recursions >= targetRecursions)
         {
             Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions));
-            closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), direction);
+            var dirToExitList = getRoomInfo(previousRoomNumber - 1);
+            closeCurrentExits(currentVect, dirToExitList, direction);
             Debug.Log("Closing final room exits. Fianl room at: " + currentVect);
             stopRecursions();
         }
@@ -549,7 +558,7 @@ public class Generation : MonoBehaviour
         //delete all objects, stop the program and restart from the start()
         hashTable.clearHashTable();
         backtrack.clearBacktrack();
-        resetTriedArray();
+        //resetTriedArray();
         clearStack();
         recursions = 0;
         Start();

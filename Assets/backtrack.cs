@@ -95,4 +95,69 @@ public class Backtrack : MonoBehaviour
             return;
         }
     }
+
+    Dictionary<Vector2, int[]> directionsTriedDictionary = new Dictionary<Vector2, int[]>();
+
+    public void writeDirectionToDictionary(Vector2 currentPosition, string direction)
+    {
+        if (directionsTriedDictionary.ContainsKey(currentPosition))
+        {
+            int[] directionsTried = directionsTriedDictionary[currentPosition];
+            var directionNum = getDirNum(direction);
+
+            directionsTried[directionNum] = 1;
+        }
+        else
+        {
+            int[] directionsTried = new int[4];
+            directionsTried[getDirNum(direction)] = 1;
+            directionsTriedDictionary[currentPosition] = directionsTried;
+        }
+    }
+
+    public bool checkDirInDict(Vector2 currentPosition, string direction)
+    {
+        if (directionsTriedDictionary.ContainsKey(currentPosition))
+        {
+            int[] directionsTried = directionsTriedDictionary[currentPosition];
+            if (directionsTried[getDirNum(direction)] == 1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool dirDictKeyExists(Vector2 currentPosition)
+    {
+        return directionsTriedDictionary.ContainsKey(currentPosition);
+    }
+
+    public int[] getDictArray(Vector2 currentVect)
+    {
+        return directionsTriedDictionary[currentVect];
+    }
+
+    int getDirNum(string direction)
+    {
+        int directionNum = -1;
+        if (direction == "right")
+        {
+            directionNum = 0;
+        }
+        else if (direction == "left")
+        {
+            directionNum = 1;
+        }
+        else if (direction == "up")
+        {
+            directionNum = 2;
+        }
+        else if (direction == "down")
+        {
+            directionNum = 3;
+        }
+        return directionNum;
+    }
+
 }
