@@ -109,7 +109,7 @@ public class Backtrack : MonoBehaviour
         }
         else
         {
-            int[] directionsTried = new int[4];
+            int[] directionsTried = new int[5];
             directionsTried[getDirNum(direction)] = 1;
             directionsTriedDictionary[currentPosition] = directionsTried;
         }
@@ -158,6 +158,30 @@ public class Backtrack : MonoBehaviour
             directionNum = 3;
         }
         return directionNum;
+    }
+
+    public void roomHasSpawned(Vector2 currentVect)
+    {
+        var array = directionsTriedDictionary[currentVect];
+        array[4] = 1;
+    }
+
+    public bool checkFirstIteration(Vector2 currentVect)
+    {
+        //if room exists then return true
+        if (directionsTriedDictionary.ContainsKey(currentVect) == false)
+        {
+            return true;
+        } else {
+            var array = directionsTriedDictionary[currentVect];
+            Debug.Log("direction array (5th is 1 if room exists): " + directionsTriedDictionary[currentVect]);
+            if (array[4] == 0 || array[4] == null)
+            {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
 }

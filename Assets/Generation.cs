@@ -20,6 +20,8 @@ public class Generation : MonoBehaviour
     public Vector2 storedExitCoords;
     public int allDirectionsTriedCounter = 0;
 
+    bool isFirstIteration = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +44,7 @@ public class Generation : MonoBehaviour
         //resetTriedArray();
 
         isBacktracking = false;
-        chooseHallwayRandom(startingVect, "up", -1, isBacktracking);
+        chooseHallwayRandom(startingVect, "up", -1, isBacktracking, true);
         clearStack();
         //resetTriedArray();
         recursions = 0;
@@ -53,7 +55,7 @@ public class Generation : MonoBehaviour
 
         startingVect = new Vector2(-14, 0);
         isBacktracking = false;
-        chooseHallwayRandom(startingVect, "left", -1, isBacktracking);
+        chooseHallwayRandom(startingVect, "left", -1, isBacktracking, true);
         clearStack();
         recursions = 0;
 
@@ -63,7 +65,7 @@ public class Generation : MonoBehaviour
         startingVect = new Vector2(0, -7);
         isBacktracking = false;
         //resetTriedArray();
-        chooseHallwayRandom(startingVect, "down", -1, isBacktracking);
+        chooseHallwayRandom(startingVect, "down", -1, isBacktracking, true);
         
     }
 
@@ -72,11 +74,14 @@ public class Generation : MonoBehaviour
     public int[] triedArray = new int[4];
     //set all values i array to 0
 
-    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking)
+    void chooseHallwayRandom(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isBacktracking, bool isFirstIteration)
     {
         //add data to backTracking system (upgrade later to make sure that the same direction is not chosen twice) if not backtracking or rechecking hallways for a room
         backtrack.addBacktrack(currentVect, previousDirection, previousRoomNumber);
         var direction = "";
+
+        isFirstIteration = backtrack.checkFirstIteration(currentVect);
+        Debug.Log("Is first iteration: " + isFirstIteration);
 
         
         // This next line should go into an array along with height, vector to centre.m Also they dont have to be vectors but you could combine to make into a single vector.
@@ -95,22 +100,23 @@ public class Generation : MonoBehaviour
         }
         else
         {
-            triedArray = new int[4];
+            triedArray = new int[5];
         }
 
         if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3))
         {
             Debug.Log("All directions have been tried. Backtracking");
+            isFirstIteration = false;
             generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
             return;
         }
 
-        if ((randomBacktrack < 40 && recursions > 2)) // make not possible if already in backtrack process
+        if ((randomBacktrack < 50 && recursions > 2)) // make not possible if already in backtrack process
         {
-            if (isBacktracking) {
-
-            } else {
+            // make not possible if already in backtrack process
+            if (!isBacktracking) {
                 Debug.Log("Random backtrack chosen");
+                isFirstIteration = false;
                 generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
                 return;
             }
@@ -186,7 +192,9 @@ public class Generation : MonoBehaviour
                 addObjectToStack(null);
                 addObjectToStack(null);
                 addObjectToStack(null);
-            } else {
+            } else if (isBacktracking == false || isFirstIteration == true) {
+                //only runs if not backtracking (e.g. first room) or if no other directions have been tried
+                //Fixes bug that happened when a room tried a second direction but wasn't considered to be 'backtracking'
                 closeExits(currentVect, dirToExitList, directionN, previousDirection);
             }
         }
@@ -214,7 +222,8 @@ public class Generation : MonoBehaviour
             backInfo = backtrack.retrieveInformation(1);
         }
         isBacktracking = true;
-        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking);
+        isFirstIteration = false;
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking, isFirstIteration);
     }
 
     void checkHallway(Vector2 currentVect, Vector2 dirToExit, string direction, int directionN, int randomHallwayCount, string previousDirection, int previousRoomNumber)
@@ -228,7 +237,7 @@ public class Generation : MonoBehaviour
             triedArray[directionN - 1] = 1;
             //now while the 4th parameter (isBacktracking) is true, this si only to prevent another copy of the data being added to the backtrack system.
             isBacktracking = false;
-            chooseHallwayRandom(currentVect, previousDirection, previousRoomNumber, isBacktracking);
+            chooseHallwayRandom(currentVect, previousDirection, previousRoomNumber, isBacktracking, isFirstIteration);
         }
         else
         {
@@ -238,6 +247,7 @@ public class Generation : MonoBehaviour
 
     void closeExits(Vector2 currentVect, List<Vector2> dirToExitList, int directionN, string previousDirection)
     {
+        Debug.Log("Closing exits");
         var exitPrefab = Resources.Load<GameObject>("Exits/Exit");
         if (directionN != 1 && previousDirection != "left" )
         {
@@ -378,7 +388,10 @@ public class Generation : MonoBehaviour
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
         isBacktracking = true;
-        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking);
+
+        backtrack.roomHasSpawned(backtrack.retrieveInformation(0).Item1);
+
+        chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking, isFirstIteration);
     }
 
     void spawnRoomRandom(Vector2 currentVect, Vector2 dirToExit, string direction, int roomNumber)
@@ -498,6 +511,7 @@ public class Generation : MonoBehaviour
         if (recursions >= targetRecursions)
         {
             Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions));
+            
             var dirToExitList = getRoomInfo(previousRoomNumber - 1);
             closeCurrentExits(currentVect, dirToExitList, direction);
             Debug.Log("Closing final room exits. Fianl room at: " + currentVect);
@@ -507,7 +521,8 @@ public class Generation : MonoBehaviour
         {
             Debug.Log("Room " + (recursions) + "/" + (targetRecursions) + "spawned");
             isBacktracking = false;
-            chooseHallwayRandom(currentVect, direction, previousRoomNumber, isBacktracking);
+            isFirstIteration = true;
+            chooseHallwayRandom(currentVect, direction, previousRoomNumber, isBacktracking, isFirstIteration);
         }
     }
 
@@ -519,7 +534,7 @@ public class Generation : MonoBehaviour
         backtrack.printAllTuples();
     }
 
-    void closeCurrentExits(Vector2 currentVect, List<Vector2> dirToExitList,  string previousDirection)
+    void closeCurrentExits(Vector2 currentVect, List<Vector2> dirToExitList, string previousDirection)
     {
         var exitPrefab = Resources.Load<GameObject>("Exits/Exit");
         if (previousDirection != "left")
@@ -528,12 +543,14 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit1");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             // no need for addObjectToStack(exit); as the exit is not part of the path and the objects will not need to be deleted
+            backtrack.addExitObject(vectToClose, exit);
         }
         if (previousDirection != "right")
         {
             var vectToClose = currentVect + dirToExitList[2] + new Vector2(1, 0);
             exitPrefab = Resources.Load<GameObject>("Exits/Exit2");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            backtrack.addExitObject(vectToClose, exit);
             
         }
         if (previousDirection != "down")
@@ -541,6 +558,7 @@ public class Generation : MonoBehaviour
             var vectToClose = currentVect + dirToExitList[3] + new Vector2(0, -1);
             exitPrefab = Resources.Load<GameObject>("Exits/Exit3");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            backtrack.addExitObject(vectToClose, exit);
             
         }
         if (previousDirection != "up")
@@ -548,6 +566,7 @@ public class Generation : MonoBehaviour
             var vectToClose = currentVect + dirToExitList[4] + new Vector2(0, 1);
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
+            backtrack.addExitObject(vectToClose, exit);
             
         }
     }
