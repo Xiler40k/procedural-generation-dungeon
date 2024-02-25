@@ -103,10 +103,17 @@ public class Generation : MonoBehaviour
             triedArray = new int[5];
         }
 
-        if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3))
+        if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3) && isBacktracking == true)
+        {
+            //If backtracking to a room that has already tried all directions, then every exits shouldn't close????
+            Debug.Log("All directions have been tried. No exits should close. Backtracking");
+            generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
+            return;
+        }
+        else if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3))
         {
             Debug.Log("All directions have been tried. Backtracking");
-            isFirstIteration = false;
+            closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection);
             generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
             return;
         }
@@ -116,7 +123,7 @@ public class Generation : MonoBehaviour
             // make not possible if already in backtrack process
             if (!isBacktracking) {
                 Debug.Log("Random backtrack chosen");
-                isFirstIteration = false;
+                closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection);
                 generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
                 return;
             }
@@ -192,7 +199,7 @@ public class Generation : MonoBehaviour
                 addObjectToStack(null);
                 addObjectToStack(null);
                 addObjectToStack(null);
-            } else if (isBacktracking == false || isFirstIteration == true) {
+            } else if (isFirstIteration == true || isBacktracking == false) {
                 //only runs if not backtracking (e.g. first room) or if no other directions have been tried
                 //Fixes bug that happened when a room tried a second direction but wasn't considered to be 'backtracking'
                 closeExits(currentVect, dirToExitList, directionN, previousDirection);
@@ -214,7 +221,6 @@ public class Generation : MonoBehaviour
 
     void generationBacktrack(Vector2 currentVect, string previousDirection, int previousRoomNumber, bool isRandom)
     {
-        closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection);
         System.Tuple<Vector2, string, int> backInfo;
         if (isRandom) {
             backInfo = backtrack.retrieveInformation(UnityEngine.Random.Range(1, recursions-1));
@@ -222,7 +228,6 @@ public class Generation : MonoBehaviour
             backInfo = backtrack.retrieveInformation(1);
         }
         isBacktracking = true;
-        isFirstIteration = false;
         chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking, isFirstIteration);
     }
 
@@ -237,6 +242,7 @@ public class Generation : MonoBehaviour
             triedArray[directionN - 1] = 1;
             //now while the 4th parameter (isBacktracking) is true, this si only to prevent another copy of the data being added to the backtrack system.
             isBacktracking = false;
+            backtrack.roomHasntSpawned(currentVect);
             chooseHallwayRandom(currentVect, previousDirection, previousRoomNumber, isBacktracking, isFirstIteration);
         }
         else
@@ -370,6 +376,7 @@ public class Generation : MonoBehaviour
                     backtrack.removeExitObject(storedExitCoords);
                     Debug.Log("Exit deleted at" + storedExitCoords);
                 }
+                backtrack.roomHasSpawned(backtrack.retrieveInformation(0).Item1);
                 spawnRoomRandom(currentVect, dirToExit, direction, roomNumber);
 
                 //get info about room exit to open from earlier and open it now.
@@ -387,9 +394,11 @@ public class Generation : MonoBehaviour
         deleteExits();
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
-        isBacktracking = true;
+        //stil don't know it this is false or true but false seems to work better D:
+        isBacktracking = false;
 
-        backtrack.roomHasSpawned(backtrack.retrieveInformation(0).Item1);
+        backtrack.roomHasntSpawned(backtrack.retrieveInformation(0).Item1);
+
 
         chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking, isFirstIteration);
     }
@@ -512,16 +521,15 @@ public class Generation : MonoBehaviour
         {
             Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions));
             
-            var dirToExitList = getRoomInfo(previousRoomNumber - 1);
-            closeCurrentExits(currentVect, dirToExitList, direction);
+            closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), direction);
             Debug.Log("Closing final room exits. Fianl room at: " + currentVect);
+            recursions = targetRecursions + 1000;
             stopRecursions();
         }
         else
         {
             Debug.Log("Room " + (recursions) + "/" + (targetRecursions) + "spawned");
             isBacktracking = false;
-            isFirstIteration = true;
             chooseHallwayRandom(currentVect, direction, previousRoomNumber, isBacktracking, isFirstIteration);
         }
     }

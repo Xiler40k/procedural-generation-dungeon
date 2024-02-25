@@ -166,6 +166,12 @@ public class Backtrack : MonoBehaviour
         array[4] = 1;
     }
 
+    public void roomHasntSpawned(Vector2 currentVect)
+    {
+        var array = directionsTriedDictionary[currentVect];
+        array[4] = 0;
+    }
+
     public bool checkFirstIteration(Vector2 currentVect)
     {
         //if room exists then return true
@@ -174,8 +180,7 @@ public class Backtrack : MonoBehaviour
             return true;
         } else {
             var array = directionsTriedDictionary[currentVect];
-            Debug.Log("direction array (5th is 1 if room exists): " + directionsTriedDictionary[currentVect]);
-            if (array[4] == 0 || array[4] == null)
+            if (array[4] == 0)
             {
                 return true;
             } else {

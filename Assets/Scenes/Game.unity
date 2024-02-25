@@ -187,6 +187,8 @@ MonoBehaviour:
   parent: {fileID: 67552980}
   vCorridor: {fileID: 6967787771261492557, guid: bb2ef658098b4104fb838148e0ee9454, type: 3}
   hCorridor: {fileID: 3458677340063487281, guid: 513e189620c8803468acf176a5de7b4a, type: 3}
+  storedExitCoords: {x: 0, y: 0}
+  allDirectionsTriedCounter: 0
   triedArray: 00000000000000000000000000000000
 --- !u!114 &67552984
 MonoBehaviour:
@@ -521,7 +523,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 40
+  orthographic size: 50
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
