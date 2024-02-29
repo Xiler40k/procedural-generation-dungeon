@@ -23,7 +23,12 @@ public class Generation : MonoBehaviour
     bool isFirstIteration = true;
 
     // Start is called before the first frame update
+
     void Start()
+    {
+        generateDungeon();
+    }
+    void generateDungeon()
     {
         hashTable = GameObject.FindGameObjectWithTag("HashTable").GetComponent<HashGrid>(); //not sure If I need anymore
         hashTable.testing(1);
@@ -373,13 +378,13 @@ public class Generation : MonoBehaviour
             {
                 if (isBacktracking == true)
                 {
+                    //get info about room exit to open from earlier and open it now.
                     backtrack.removeExitObject(storedExitCoords);
                     Debug.Log("Exit deleted at" + storedExitCoords);
                 }
                 backtrack.roomHasSpawned(backtrack.retrieveInformation(0).Item1);
                 spawnRoomRandom(currentVect, dirToExit, direction, roomNumber);
 
-                //get info about room exit to open from earlier and open it now.
                 return;
             }
             else
