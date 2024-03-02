@@ -9,25 +9,28 @@ public class combat : MonoBehaviour
     public Rigidbody2D rbBullet;
     public float bulletDistance = 0.74f;
     float bulletVelocity = 5f;
-
     public int bulletsInChamber = 6;
-
     public TMPro.TextMeshProUGUI ammoText;
-
     bool isReloading = false;
+    public int health = 5;
 
     
     // Update is called once per frame
     void Update()
     {
+        if (health <= 0)
+        {
+            Debug.Log("Ded");
+            //stop script
+            this.enabled = false;
+        }
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (Input.GetMouseButtonDown(0) && bulletsInChamber > 0)
         {
             //passes vector from player to mouse
             shootBullet(new Vector2 (mousePosition.x, mousePosition.y) - rb.position);
-            Debug.Log("Shoot");
-            //removes bullet from chamber
+            //decreases bullets in chamber
             bulletsInChamber--;
             //change text on screen
             ammoText.text = bulletsInChamber.ToString() + "/6";
@@ -35,7 +38,7 @@ public class combat : MonoBehaviour
         //if space bar pressed 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (bulletsInChamber == 6)
+            if (bulletsInChamber >= 6)
             {
                 shootCircle(new Vector2 (mousePosition.x, mousePosition.y) - rb.position);
             }
@@ -62,8 +65,10 @@ public class combat : MonoBehaviour
             angle += (i * 60);
             Vector2 newDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
             shootBullet(newDirection);
-            bulletsInChamber = bulletsInChamber - 6;
         }
+        bulletsInChamber -= 6;
+        ammoText.text = bulletsInChamber.ToString() + "/6";
+        
     }
 
     IEnumerator reload()

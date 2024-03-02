@@ -247,7 +247,10 @@ public class Generation : MonoBehaviour
             triedArray[directionN - 1] = 1;
             //now while the 4th parameter (isBacktracking) is true, this si only to prevent another copy of the data being added to the backtrack system.
             isBacktracking = false;
-            backtrack.roomHasntSpawned(currentVect);
+            if (backtrack.checkFirstIteration(currentVect) == true)
+            {
+                backtrack.roomHasntSpawned(currentVect);
+            }
             chooseHallwayRandom(currentVect, previousDirection, previousRoomNumber, isBacktracking, isFirstIteration);
         }
         else

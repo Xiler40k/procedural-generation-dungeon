@@ -7,6 +7,8 @@ TagManager:
   - HashTable
   - Backtrack
   - ExitTag
+  - Enemy
+  - Character
   layers:
   - Default
   - TransparentFX

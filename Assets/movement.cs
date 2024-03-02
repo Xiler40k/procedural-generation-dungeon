@@ -8,10 +8,8 @@ public class movement : MonoBehaviour
 {
     public float playerSpeed;
     public Rigidbody2D rb;
-
     public Rigidbody2D rbGun;
     private Vector2 playerDirection;
-
     private Vector2 mousePosition;
 
     // Update is called once per frame
@@ -20,6 +18,8 @@ public class movement : MonoBehaviour
         // takes player inputs for direction (WASD or arrow keys)
         playerDirection.x = Input.GetAxisRaw("Horizontal");
         playerDirection.y = Input.GetAxisRaw("Vertical");
+
+        rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
 
         //gets position of mouse (Vector3)
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -37,6 +37,6 @@ public class movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
+        
     }
 }

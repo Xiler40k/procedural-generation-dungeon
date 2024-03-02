@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class bulletScript : MonoBehaviour
+public class enemyBulletScript : MonoBehaviour
 {
     public int damage = 1;
     void Update()
@@ -14,9 +14,9 @@ public class bulletScript : MonoBehaviour
     {
         Destroy(gameObject);
 
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Character")
         {
-            collision.gameObject.GetComponent<enemy1Script>().health -= damage;
+            GameObject.Find("gun").GetComponent<combat>().health -= damage;
         }
     }
 }
