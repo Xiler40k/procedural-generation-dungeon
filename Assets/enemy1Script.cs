@@ -8,13 +8,14 @@ public class enemy1Script : MonoBehaviour
     private Rigidbody2D rbPlayer;
     public Rigidbody2D rbEnemyBullet;
     public float speed = 3f;
-    public int health = 3;
+    public float health = 3f;
     private float targetDistance = 10f;
     private float attackDistance = 5f;
     public float bulletVelocity = 6f;
     public bool isChasing = false;
     public bool isShooting = false;
     public bool canShoot = true;
+    public bool isStunned = false;
     public Vector2 direction;
 
     void Start() {
@@ -28,13 +29,13 @@ public class enemy1Script : MonoBehaviour
         {
             /*
             positionOfDeath = rb.position;
-            GameObject.Find("lootSystem").GetComponent<lootSystem>().dropLoot(positionOfDeath);
+            GameObject.Find("lootSystem").GetDrop();
             */
             Destroy(gameObject);
         }
 
 
-        if (shouldBeChasing() && isShooting == false)
+        if (shouldBeChasing() && isShooting == false && isStunned == false)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;
@@ -100,7 +101,16 @@ public class enemy1Script : MonoBehaviour
 
     void shootBullet(Vector2 direction)
     {
-        Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.5f), Quaternion.identity);
+        Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
         enemyBullet.velocity = direction.normalized * bulletVelocity;
+    }
+
+    public IEnumerator takeKnockback()
+    {
+        isStunned = true;
+        Vector2 knockbackDirection = (rb.position - rbPlayer.position).normalized;
+        rb.AddForce(knockbackDirection * 5, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.4f);
+        isStunned = false;
     }
 }

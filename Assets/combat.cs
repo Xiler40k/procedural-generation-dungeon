@@ -7,6 +7,7 @@ public class combat : MonoBehaviour
     public Rigidbody2D rb;
     public Rigidbody2D rbGun;
     public Rigidbody2D rbBullet;
+    public GameObject bulletGameObject;
     public float bulletDistance = 0.74f;
     float bulletVelocity = 5f;
     public int bulletsInChamber = 6;
@@ -14,10 +15,20 @@ public class combat : MonoBehaviour
     public TMPro.TextMeshProUGUI tpText;
     public bool canTp = true;
     bool isReloading = false;
-    public int health = 6;
+    public float health = 6.0f;
+
+    //array called bulletColors
+    public string[] bulletColors = new string[] {"White", "Orange", "Blue", "Green"};
+    public Color[] bulletColorCodes = new Color[] {new Color(243/255f, 235/255f, 235/255f, 255/255f), new Color(245/255f, 132/255f, 17/255f, 255/255f), new Color(233/255f, 21/255f, 132/255f, 255/255f), new Color(13/255f, 192/255f, 0/255f, 255/255f)};
+    public string selectedColor = "White";
 
     
     // Update is called once per frame
+
+    void Start()
+    {
+        bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes[0];
+    }
     void Update()
     {
         if (health <= 0)
@@ -56,6 +67,25 @@ public class combat : MonoBehaviour
         {
             teleport(mousePosition);
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            changeColor();
+        } 
+    }
+
+
+    void changeColor() {
+        var index = System.Array.IndexOf(bulletColors, selectedColor);
+        if (index < 3) {
+            index++;
+        } else {
+            index = 0;
+        }
+        selectedColor = bulletColors[index];
+        bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes[index];
+
+        //change GUI
     }
 
     void shootBullet(Vector2 direction)

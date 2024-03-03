@@ -7,7 +7,7 @@ public class enemy2Script : MonoBehaviour
     private Rigidbody2D rb;
     private Rigidbody2D rbPlayer;
     public float speed = 3.8f;
-    public int health = 5;
+    public float health = 5f;
     private float targetDistance = 20f;
     int damage = 1;
     int stunAmount = 10;
@@ -90,5 +90,14 @@ public class enemy2Script : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         canAttack = true;
+    }
+
+    public IEnumerator takeKnockback()
+    {
+        isStunned = true;
+        Vector2 knockbackDirection = (rb.position - rbPlayer.position).normalized;
+        rb.AddForce(knockbackDirection * 5, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.4f);
+        isStunned = false;
     }
 }
