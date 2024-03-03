@@ -5,10 +5,6 @@ using UnityEngine;
 public class enemyBulletScript : MonoBehaviour
 {
     public int damage = 1;
-    void Update()
-    {
-        
-    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -17,6 +13,7 @@ public class enemyBulletScript : MonoBehaviour
         if (collision.gameObject.tag == "Character")
         {
             GameObject.Find("gun").GetComponent<combat>().health -= damage;
+            Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().health);
         }
     }
 }

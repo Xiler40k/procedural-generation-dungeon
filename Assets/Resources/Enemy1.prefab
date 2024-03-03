@@ -29,11 +29,11 @@ Transform:
   m_GameObject: {fileID: 6720122009152814949}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 3.1, y: 3.1, z: 1}
+  m_LocalScale: {x: 3.1, y: 3.1, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3024666822389143683
 SpriteRenderer:
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: fe877276a2b83fe4ca28b49c6d534769, type: 3}
-  m_Color: {r: 0.9622642, g: 0.2140169, b: 0.06808472, a: 1}
+  m_Color: {r: 0.9607843, g: 0.5165811, b: 0.06666665, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -100,7 +100,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 8
+  m_LinearDrag: 10
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -171,6 +171,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 368b83490ece02d4188d55d623625c4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rbEnemyBullet: {fileID: 2356849338644082493, guid: a0705b9d7ac936a4b8f42a14a4112baa, type: 3}
   speed: 3
   health: 3
+  bulletVelocity: 6
+  isChasing: 0
+  isShooting: 0
+  canShoot: 1
+  direction: {x: 0, y: 0}

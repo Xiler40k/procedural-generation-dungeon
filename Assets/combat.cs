@@ -11,8 +11,10 @@ public class combat : MonoBehaviour
     float bulletVelocity = 5f;
     public int bulletsInChamber = 6;
     public TMPro.TextMeshProUGUI ammoText;
+    public TMPro.TextMeshProUGUI tpText;
+    public bool canTp = true;
     bool isReloading = false;
-    public int health = 5;
+    public int health = 6;
 
     
     // Update is called once per frame
@@ -49,6 +51,11 @@ public class combat : MonoBehaviour
             isReloading = true;
             StartCoroutine(reload());
         }
+
+        if (Input.GetKeyDown(KeyCode.T) && canTp)
+        {
+            teleport(mousePosition);
+        }
     }
 
     void shootBullet(Vector2 direction)
@@ -57,7 +64,7 @@ public class combat : MonoBehaviour
         bullet.velocity = direction.normalized * bulletVelocity;
     }
 
-    void shootCircle(Vector2 direction)
+    void shootCircle(Vector2 direction) //player probs shouldnt have this?
     {
         for (int i = 0; i < 6; i++)
         {
@@ -68,7 +75,30 @@ public class combat : MonoBehaviour
         }
         bulletsInChamber -= 6;
         ammoText.text = bulletsInChamber.ToString() + "/6";
-        
+    }
+
+    void teleport(Vector3 mousePosition)
+    {
+        Vector2 mousePosition2 = new Vector2(mousePosition.x, mousePosition.y);
+        if (mousePosition2.magnitude < 5)
+        {
+            rb.position = mousePosition;
+            StartCoroutine(teleportTimer());
+        }
+    }
+
+    IEnumerator teleportTimer()
+    {
+        var timerLeft = 10;
+        canTp = false;
+        tpText.text = "0:10";
+        for (int i = 0; i < 10; i++)
+        {
+            yield return new WaitForSeconds(1);
+            timerLeft--;
+            tpText.text = "0:0" + timerLeft.ToString();
+        };
+        canTp = true;
     }
 
     IEnumerator reload()

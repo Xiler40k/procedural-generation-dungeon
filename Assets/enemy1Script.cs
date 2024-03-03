@@ -5,16 +5,17 @@ using UnityEngine;
 public class enemy1Script : MonoBehaviour
 {
     private Rigidbody2D rb;
-    public float speed = 3f;
-    public int health = 3;
     private Rigidbody2D rbPlayer;
     public Rigidbody2D rbEnemyBullet;
+    public float speed = 3f;
+    public int health = 3;
+    private float targetDistance = 10f;
+    private float attackDistance = 5f;
+    public float bulletVelocity = 6f;
     public bool isChasing = false;
     public bool isShooting = false;
     public bool canShoot = true;
     public Vector2 direction;
-
-    public float bulletVelocity = 6f;
 
     void Start() {
         rb = this.GetComponent<Rigidbody2D>();
@@ -25,6 +26,10 @@ public class enemy1Script : MonoBehaviour
     {
         if (health <= 0)
         {
+            /*
+            positionOfDeath = rb.position;
+            GameObject.Find("lootSystem").GetComponent<lootSystem>().dropLoot(positionOfDeath);
+            */
             Destroy(gameObject);
         }
 
@@ -40,7 +45,7 @@ public class enemy1Script : MonoBehaviour
             isChasing = false;
         }
 
-        if (canShoot && getDistance() < 2.5)
+        if (canShoot && getDistance() < attackDistance)
         {
             StartCoroutine(attack());
             rb.velocity = new Vector2(0, 0);
@@ -59,7 +64,7 @@ public class enemy1Script : MonoBehaviour
     bool shouldBeChasing()
     {
         var dist = getDistance();
-        if (dist < 5)
+        if (dist < targetDistance)
         {
             return true;
         }
