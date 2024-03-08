@@ -18,8 +18,8 @@ public class combat : MonoBehaviour
     public float health = 6.0f;
 
     //array called bulletColors
-    public string[] bulletColors = new string[] {"White", "Orange", "Blue", "Green"};
-    public Color[] bulletColorCodes = new Color[] {new Color(243/255f, 235/255f, 235/255f, 255/255f), new Color(245/255f, 132/255f, 17/255f, 255/255f), new Color(233/255f, 21/255f, 132/255f, 255/255f), new Color(13/255f, 192/255f, 0/255f, 255/255f)};
+    public string[] bulletColors = new string[] {"White", "Orange", "Blue", "Green", "Yellow"};
+    public Color[] bulletColorCodes = new Color[] {new Color(243/255f, 235/255f, 235/255f, 255/255f), new Color(245/255f, 132/255f, 17/255f, 255/255f), new Color(21/255f, 217/255f, 233/255f, 255/255f), new Color(13/255f, 192/255f, 0/255f, 255/255f), new Color(255/255f, 247/255f, 1/255f, 255/255f)};
     public string selectedColor = "White";
 
     
@@ -77,7 +77,7 @@ public class combat : MonoBehaviour
 
     void changeColor() {
         var index = System.Array.IndexOf(bulletColors, selectedColor);
-        if (index < 3) {
+        if (index < 4) {
             index++;
         } else {
             index = 0;

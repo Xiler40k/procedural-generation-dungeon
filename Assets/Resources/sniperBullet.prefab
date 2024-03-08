@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 891746827083533105}
   - component: {fileID: 1422206223109256335}
   - component: {fileID: 2356849338644082493}
-  - component: {fileID: -3139634425161684379}
   - component: {fileID: 4689490171226820449}
+  - component: {fileID: -6351768881681485903}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: sniperBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 7188477412096657612}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
+  m_LocalScale: {x: 0.37, y: 0.37, z: 0.37}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -75,9 +75,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1314060523
   m_SortingLayer: 1
-  m_SortingOrder: 10
+  m_SortingOrder: 11
   m_Sprite: {fileID: -2413806693520163455, guid: 40bbaed82073cd34293f8fe7aa50957b, type: 3}
-  m_Color: {r: 0.9529412, g: 0.92156863, b: 0.92156863, a: 1}
+  m_Color: {r: 0.9811321, g: 0.16068284, b: 0.06849409, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -114,20 +114,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-3139634425161684379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7188477412096657612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f9797d1812046b4f9ddc8c582676eb7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1
-  playerCombatScript: {fileID: 0}
 --- !u!58 &4689490171226820449
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -163,3 +149,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.49999997
+--- !u!114 &-6351768881681485903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7188477412096657612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb136b5d89754214b9ec561320d19432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1

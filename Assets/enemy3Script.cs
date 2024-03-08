@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Circle firing bot
-public class enemy1Script : MonoBehaviour
+//Sniper bot
+public class enemy3Script : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Rigidbody2D rbPlayer;
     public Rigidbody2D rbEnemyBullet;
     public float speed = 3f;
-    public float health = 3f;
-    private float targetDistance = 10f;
-    private float attackDistance = 5f;
-    public float bulletVelocity = 6f;
+    public float health = 2f;
+    private float targetDistance = 9.5f;
+    private float attackDistance = 10f;
+    public float bulletVelocity = 60f; //sniper predicts 0.8 seconds ahead so 10/0.8 = 12.5 (as a base value)
     public bool isChasing = false;
     public bool isShooting = false;
     public bool canShoot = true;
     public bool isStunned = false;
+    public bool isEscaping = false; //moves enemy away from player
     public Vector2 direction;
+    //public int damage = 2
 
     void Start() {
         rb = this.GetComponent<Rigidbody2D>();
@@ -35,8 +37,18 @@ public class enemy1Script : MonoBehaviour
             Destroy(gameObject);
         }
 
+        if (getDistance() < 5)
+        {
+            isEscaping = true;
+            direction = rb.position - rbPlayer.position;
+            rb.velocity = direction.normalized * speed;
+            float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+            rb.rotation = angle;
+        } else {
+            isEscaping = false;
+        }
 
-        if (shouldBeChasing() && isShooting == false && isStunned == false)
+        if (shouldBeChasing() && isEscaping == false && isShooting == false && isStunned == false)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;
@@ -47,25 +59,28 @@ public class enemy1Script : MonoBehaviour
             isChasing = false;
         }
 
-        if (canShoot && getDistance() < attackDistance)
+        if (canShoot && getDistance() <= 10)
         {
             StartCoroutine(attack());
             rb.velocity = new Vector2(0, 0);
             isChasing = false;
         }
 
-        if(rb.velocity.magnitude <= 0.1 && isChasing == true && isShooting == false)
+        //Will need to improve next section for sniper
+
+        if (rb.velocity.magnitude <= 0.1 && isChasing == true && isShooting == false)
         {
             //try a suitable direction based on direction from character to player
             direction = rbPlayer.position - rb.position;
-            rb.velocity = new Vector2((direction.x < 0 ? -3 : 3) * speed, (direction.y < 0 ? -3 : 3) * speed);
+            rb.velocity = new Vector2((direction.x < 0 ? -5 : 5) * speed, (direction.y < 0 ? -5 : 5) * speed);
         }
     }
 
     bool shouldBeChasing()
     {
         var dist = getDistance();
-        if (dist < targetDistance)
+        // great than so it stops at larger distance
+        if (dist > targetDistance)
         {
             return true;
         }
@@ -82,25 +97,25 @@ public class enemy1Script : MonoBehaviour
         isShooting = true;
         canShoot = false;
         yield return new WaitForSeconds(0.5f);
-        shoot(rbPlayer.position - rb.position);
+        //2 shots to combat player teleportation
+        shootBullet();
+        yield return new WaitForSeconds(1.5f);
+        shootBullet();
         yield return new WaitForSeconds(0.5f);
         isShooting = false;
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.3f);
         canShoot = true;
     }
 
-    void shoot(Vector2 direction){
-        for (int i = 0; i < 10; i++)
-        {
-            float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-            angle += (i * 36);
-            Vector2 newDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
-            shootBullet(newDirection);
-        }
-    }
-
-    void shootBullet(Vector2 direction)
+    void shootBullet()
     {
+        //take players diecrion velocity and calc where they will be in 0.8 seconds.
+        var playerVelocity = rbPlayer.velocity * 0.8f;
+        Vector2 futurePosition = rbPlayer.position + playerVelocity;
+        //aim there and shoot
+        direction = futurePosition - rb.position;
+        bulletVelocity = 30f;
+        
         Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
         enemyBullet.velocity = direction.normalized * bulletVelocity;
     }

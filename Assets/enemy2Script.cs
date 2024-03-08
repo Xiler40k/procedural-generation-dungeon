@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//chasing and melee bot
 public class enemy2Script : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -68,11 +69,13 @@ public class enemy2Script : MonoBehaviour
     {
         if(collision.gameObject.tag == "Character" && canAttack == true)
         {
+            //Deals damage to player
             GameObject.Find("gun").GetComponent<combat>().health -= damage;
             Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().health);
             canAttack = false;
             //deal knockback to enemy
             isStunned = true;
+            //moves enemy away from player and delays movement and next attack
             StartCoroutine(stunDelay());
             Vector2 knockbackDirection = (rb.position - rbPlayer.position).normalized;
             rb.AddForce(knockbackDirection * stunAmount, ForceMode2D.Impulse);

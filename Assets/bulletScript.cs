@@ -44,8 +44,14 @@ public class bulletScript : MonoBehaviour
                 enemyNum = 2;
             } /* else if (enemy3Script != null)
             {
-                enemy3Script.health -= damage;
-            } else if (enemy4Script != null)
+                if (playerCombatScript.selectedColor == "Blue")
+                {
+                    enemy3Script.health -= damage;
+                } else
+                {
+                    enemy3Script.health -= 0.2f * damage;
+                }
+            } /* else if (enemy4Script != null)
             {
                 enemy4Script.health -= damage;
             } */

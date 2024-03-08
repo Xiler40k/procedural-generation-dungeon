@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Circle firing bot
-public class enemy1Script : MonoBehaviour
+public class enemy4Script : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Rigidbody2D rbPlayer;
-    public Rigidbody2D rbEnemyBullet;
-    public float speed = 3f;
-    public float health = 3f;
+    public GameObject shockwavePrefab;
+    public float speed = 3.6f;
+    public float health = 6f;
     private float targetDistance = 10f;
     private float attackDistance = 5f;
     public float bulletVelocity = 6f;
@@ -81,30 +81,17 @@ public class enemy1Script : MonoBehaviour
     {
         isShooting = true;
         canShoot = false;
-        yield return new WaitForSeconds(0.5f);
-        shoot(rbPlayer.position - rb.position);
+        yield return new WaitForSeconds(0.1f);
+        shockwave();
         yield return new WaitForSeconds(0.5f);
         isShooting = false;
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(3f);
         canShoot = true;
     }
 
-    void shoot(Vector2 direction){
-        for (int i = 0; i < 10; i++)
-        {
-            float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-            angle += (i * 36);
-            Vector2 newDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
-            shootBullet(newDirection);
-        }
+    void shockwave() {
+        var shockwave = Instantiate(shockwavePrefab, rb.position, Quaternion.identity);
     }
-
-    void shootBullet(Vector2 direction)
-    {
-        Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
-        enemyBullet.velocity = direction.normalized * bulletVelocity;
-    }
-
     public IEnumerator takeKnockback()
     {
         isStunned = true;
