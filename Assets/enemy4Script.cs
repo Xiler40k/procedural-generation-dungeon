@@ -8,7 +8,7 @@ public class enemy4Script : MonoBehaviour
     private Rigidbody2D rb;
     private Rigidbody2D rbPlayer;
     public GameObject shockwavePrefab;
-    public float speed = 3.6f;
+    public float speed = 4.1f;
     public float health = 6f;
     private float targetDistance = 10f;
     private float attackDistance = 5f;
@@ -81,7 +81,6 @@ public class enemy4Script : MonoBehaviour
     {
         isShooting = true;
         canShoot = false;
-        yield return new WaitForSeconds(0.1f);
         shockwave();
         yield return new WaitForSeconds(0.5f);
         isShooting = false;

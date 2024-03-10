@@ -11,7 +11,6 @@ public class enemy3Script : MonoBehaviour
     public float speed = 3f;
     public float health = 2f;
     private float targetDistance = 9.5f;
-    private float attackDistance = 10f;
     public float bulletVelocity = 60f; //sniper predicts 0.8 seconds ahead so 10/0.8 = 12.5 (as a base value)
     public bool isChasing = false;
     public bool isShooting = false;

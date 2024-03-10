@@ -18,8 +18,8 @@ public class bulletScript : MonoBehaviour
         {
             var enemy1Script = collision.gameObject.GetComponent<enemy1Script>();
             var enemy2Script = collision.gameObject.GetComponent<enemy2Script>();
-            //var enemy3Script = collision.gameObject.GetComponent<enemy3Script>();
-            //var enemy4Script = collision.gameObject.GetComponent<enemy4Script>();
+            var enemy3Script = collision.gameObject.GetComponent<enemy3Script>();
+            var enemy4Script = collision.gameObject.GetComponent<enemy4Script>();
             var enemyNum = 0;
             if (enemy1Script != null)
             {
@@ -42,7 +42,7 @@ public class bulletScript : MonoBehaviour
                     enemy2Script.health -= 0.2f * damage;
                 }
                 enemyNum = 2;
-            } /* else if (enemy3Script != null)
+            } else if (enemy3Script != null)
             {
                 if (playerCombatScript.selectedColor == "Blue")
                 {
@@ -51,10 +51,16 @@ public class bulletScript : MonoBehaviour
                 {
                     enemy3Script.health -= 0.2f * damage;
                 }
-            } /* else if (enemy4Script != null)
+            } else if (enemy4Script != null)
             {
-                enemy4Script.health -= damage;
-            } */
+                if (playerCombatScript.selectedColor == "Yellow")
+                {
+                    enemy4Script.health -= damage;
+                } else
+                {
+                    enemy4Script.health -= 0.2f * damage;
+                }
+            }
 
             if (enemyNum == 1)
             {
@@ -62,6 +68,12 @@ public class bulletScript : MonoBehaviour
             } else if (enemyNum == 2)
             {
                 collision.gameObject.GetComponent<enemy2Script>().StartCoroutine("takeKnockback");
+            } else if (enemyNum == 3)
+            {
+                collision.gameObject.GetComponent<enemy3Script>().StartCoroutine("takeKnockback");
+            } else if (enemyNum == 4)
+            {
+                collision.gameObject.GetComponent<enemy4Script>().StartCoroutine("takeKnockback");
             }
         }
     }

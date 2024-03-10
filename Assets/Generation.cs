@@ -9,6 +9,7 @@ public class Generation : MonoBehaviour
     public GameObject parent; //not used
     public GameObject vCorridor; 
     public GameObject hCorridor;
+    public GameObject key;
     private int recursions = 0;
     private int targetRecursions = 6; // this is desired number of rooms per path iteration. 
 
@@ -530,6 +531,7 @@ public class Generation : MonoBehaviour
             Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions));
             
             closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), direction);
+            var spawnKey = Instantiate(key, currentVect, Quaternion.identity, gameObject.transform);
             Debug.Log("Closing final room exits. Fianl room at: " + currentVect);
             recursions = targetRecursions + 1000;
             stopRecursions();

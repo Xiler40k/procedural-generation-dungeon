@@ -5,7 +5,7 @@ using UnityEngine;
 public class shockwaveScript : MonoBehaviour
 {
     public bool shockwaveEnabled = true;
-    private float expansionTime = 0.5f;
+    private float expansionTime = 0.05f;
     private float targetSize = 7;
     void Update()
     {
@@ -13,6 +13,7 @@ public class shockwaveScript : MonoBehaviour
         if (this.transform.localScale.x < targetSize)
         {
             //expand over 2s
+            this.transform.localScale += new Vector3(1, 1, 0) * Time.deltaTime / expansionTime;
         } else 
         {
             Destroy(this.gameObject);

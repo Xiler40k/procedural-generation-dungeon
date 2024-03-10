@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class combat : MonoBehaviour
 {
     public Rigidbody2D rb;
     public Rigidbody2D rbGun;
     public Rigidbody2D rbBullet;
+    public GameObject panel;
     public GameObject bulletGameObject;
     public float bulletDistance = 0.74f;
     float bulletVelocity = 5f;
@@ -16,10 +18,6 @@ public class combat : MonoBehaviour
     public bool canTp = true;
     bool isReloading = false;
     public float health = 6.0f;
-
-    //array called bulletColors
-    public string[] bulletColors = new string[] {"White", "Orange", "Blue", "Green", "Yellow"};
-    public Color[] bulletColorCodes = new Color[] {new Color(243/255f, 235/255f, 235/255f, 255/255f), new Color(245/255f, 132/255f, 17/255f, 255/255f), new Color(21/255f, 217/255f, 233/255f, 255/255f), new Color(13/255f, 192/255f, 0/255f, 255/255f), new Color(255/255f, 247/255f, 1/255f, 255/255f)};
     public string selectedColor = "White";
 
     
@@ -27,7 +25,8 @@ public class combat : MonoBehaviour
 
     void Start()
     {
-        bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes[0];
+        bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes2[0];
+        panel.GetComponent<Image>().color = bulletColorCodes2[colorIndex];
     }
     void Update()
     {
@@ -74,18 +73,19 @@ public class combat : MonoBehaviour
         } 
     }
 
+    public string[] bulletColors2 = new string[] {"White", "Orange", "Blue", "Green", "Yellow"};
+    private int colorIndex = 0;
+    public Color[] bulletColorCodes2 = new Color[] {new Color(243/255f, 235/255f, 235/255f, 255/255f), new Color(245/255f, 132/255f, 17/255f, 255/255f), new Color(21/255f, 217/255f, 233/255f, 255/255f), new Color(13/255f, 192/255f, 0/255f, 255/255f), new Color(255/255f, 247/255f, 1/255f, 255/255f)};
+
 
     void changeColor() {
-        var index = System.Array.IndexOf(bulletColors, selectedColor);
-        if (index < 4) {
-            index++;
-        } else {
-            index = 0;
-        }
-        selectedColor = bulletColors[index];
-        bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes[index];
-
-        //change GUI
+        colorIndex = (colorIndex + 1) % 5;
+        Debug.Log(colorIndex);
+        selectedColor = bulletColors2[colorIndex];
+        Debug.Log(selectedColor);
+        bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes2[colorIndex];
+        //change GUI panel color
+        panel.GetComponent<Image>().color = bulletColorCodes2[colorIndex];
     }
 
     void shootBullet(Vector2 direction)

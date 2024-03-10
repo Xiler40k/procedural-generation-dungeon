@@ -7,7 +7,7 @@ public class enemy2Script : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Rigidbody2D rbPlayer;
-    public float speed = 3.8f;
+    public float speed = 4f;
     public float health = 5f;
     private float targetDistance = 20f;
     int damage = 1;
