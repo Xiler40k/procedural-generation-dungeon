@@ -11,6 +11,7 @@ public class movement : MonoBehaviour
     public Rigidbody2D rbGun;
     private Vector2 playerDirection;
     private Vector2 mousePosition;
+    public bool canMove = true;
 
     // Update is called once per frame
     void Update()
@@ -18,8 +19,12 @@ public class movement : MonoBehaviour
         // takes player inputs for direction (WASD or arrow keys)
         playerDirection.x = Input.GetAxisRaw("Horizontal");
         playerDirection.y = Input.GetAxisRaw("Vertical");
-
-        rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
+        
+        if (canMove)
+        {
+            //moves player in direction of input
+            rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
+        }
 
         //gets position of mouse (Vector3)
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

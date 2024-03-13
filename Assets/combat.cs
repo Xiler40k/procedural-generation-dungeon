@@ -20,6 +20,8 @@ public class combat : MonoBehaviour
     public float health = 6.0f;
     public string selectedColor = "White";
 
+    public movement movementScript;
+
     
     // Update is called once per frame
 
@@ -27,6 +29,8 @@ public class combat : MonoBehaviour
     {
         bulletGameObject.GetComponent<SpriteRenderer>().color = bulletColorCodes2[0];
         panel.GetComponent<Image>().color = bulletColorCodes2[colorIndex];
+
+        movementScript = GameObject.Find("Character").GetComponent<movement>();
     }
     void Update()
     {
@@ -145,5 +149,14 @@ public class combat : MonoBehaviour
         ammoText.transform.position += new Vector3 (11.5f, 0, 0);
         ammoText.text = bulletsInChamber.ToString() + "/6";
         isReloading = false;
+    }
+
+    public IEnumerator takeKnockback(Vector2 objectPosition)
+    {
+        movementScript.canMove = false;
+        Vector2 knockbackDirection = (rb.position - objectPosition).normalized;
+        rb.AddForce(knockbackDirection * 5, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.2f);
+        movementScript.canMove = true;
     }
 }

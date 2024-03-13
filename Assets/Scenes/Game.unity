@@ -996,6 +996,7 @@ MonoBehaviour:
   canTp: 1
   health: 5
   selectedColor: White
+  movementScript: {fileID: 0}
   bulletColors2:
   - White
   - Orange
@@ -1711,6 +1712,10 @@ PrefabInstance:
     - target: {fileID: 7913377928700659721, guid: c00a1977033eba94ca4bf92544dc5c12, type: 3}
       propertyPath: m_Name
       value: Enemy4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7913377928700659721, guid: c00a1977033eba94ca4bf92544dc5c12, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
