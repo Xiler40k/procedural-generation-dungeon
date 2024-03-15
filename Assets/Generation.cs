@@ -9,7 +9,6 @@ public class Generation : MonoBehaviour
     public GameObject parent; //not used
     public GameObject vCorridor; 
     public GameObject hCorridor;
-    public GameObject key;
     private int recursions = 0;
     private int targetRecursions = 6; // this is desired number of rooms per path iteration. 
 
@@ -23,6 +22,8 @@ public class Generation : MonoBehaviour
 
     bool isFirstIteration = true;
 
+    private int pathNumber = 1;
+
     // Start is called before the first frame update
 
     void Start()
@@ -31,6 +32,8 @@ public class Generation : MonoBehaviour
     }
     void generateDungeon()
     {
+        PlayerPrefs.SetInt("keysCollected", 0);
+
         hashTable = GameObject.FindGameObjectWithTag("HashTable").GetComponent<HashGrid>(); //not sure If I need anymore
         hashTable.testing(1);
         backtrack = GameObject.FindGameObjectWithTag("Backtrack").GetComponent<Backtrack>(); //not sure I need
@@ -39,6 +42,10 @@ public class Generation : MonoBehaviour
 
         //add starting room to hashTable should be 26, 12 but I think it may exclude walls
         hashTable.addRoom(new Vector2(0, 0), new Vector2(26, 12));
+        //hallway, right, (12,0), length 14
+        hashTable.addHallway(new Vector2(12, 0), "right", 14);
+        //room, centre (39, 0) Room Dimensions: (24, 24)
+        hashTable.addRoom(new Vector2(39, 0), new Vector2(24, 24));
 
 
         var spawnRoom = Instantiate(startingRoom, new Vector2(0, 0), Quaternion.identity, gameObject.transform); //doesn't need to be a variable
@@ -50,6 +57,7 @@ public class Generation : MonoBehaviour
         //resetTriedArray();
 
         isBacktracking = false;
+        pathNumber = 1;
         chooseHallwayRandom(startingVect, "up", -1, isBacktracking, true);
         clearStack();
         //resetTriedArray();
@@ -61,6 +69,7 @@ public class Generation : MonoBehaviour
 
         startingVect = new Vector2(-14, 0);
         isBacktracking = false;
+        pathNumber = 2;
         chooseHallwayRandom(startingVect, "left", -1, isBacktracking, true);
         clearStack();
         recursions = 0;
@@ -71,6 +80,7 @@ public class Generation : MonoBehaviour
         startingVect = new Vector2(0, -7);
         isBacktracking = false;
         //resetTriedArray();
+        pathNumber = 3;
         chooseHallwayRandom(startingVect, "down", -1, isBacktracking, true);
         
     }
@@ -531,6 +541,8 @@ public class Generation : MonoBehaviour
             Debug.Log("Algorithm stopping. Should be this many rooms: " + (targetRecursions));
             
             closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), direction);
+
+            var key = Resources.Load<GameObject>("Key " + pathNumber);
             var spawnKey = Instantiate(key, currentVect, Quaternion.identity, gameObject.transform);
             Debug.Log("Closing final room exits. Fianl room at: " + currentVect);
             recursions = targetRecursions + 1000;
