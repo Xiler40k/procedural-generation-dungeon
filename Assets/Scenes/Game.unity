@@ -167,9 +167,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 414397988}
-  - {fileID: 680213039}
   - {fileID: 545746791}
   - {fileID: 1930122060}
+  - {fileID: 680213039}
   - {fileID: 996692277}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -190,7 +190,6 @@ MonoBehaviour:
   parent: {fileID: 67552980}
   vCorridor: {fileID: 6967787771261492557, guid: bb2ef658098b4104fb838148e0ee9454, type: 3}
   hCorridor: {fileID: 3458677340063487281, guid: 513e189620c8803468acf176a5de7b4a, type: 3}
-  key: {fileID: 8735934215887905293, guid: 14cf5955d7b612c47b2467c9a8dbdb87, type: 3}
   storedExitCoords: {x: 0, y: 0}
   allDirectionsTriedCounter: 0
   triedArray: 00000000000000000000000000000000
@@ -991,6 +990,7 @@ MonoBehaviour:
   bulletGameObject: {fileID: 7188477412096657612, guid: b6402d1a74ba6754fa3ce1170fe65010, type: 3}
   bulletDistance: 0.72
   bulletsInChamber: 6
+  teleportDistance: 20
   ammoText: {fileID: 1061146491}
   tpText: {fileID: 1639672024}
   canTp: 1

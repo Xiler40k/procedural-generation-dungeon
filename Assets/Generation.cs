@@ -30,7 +30,7 @@ public class Generation : MonoBehaviour
     {
         generateDungeon();
     }
-    void generateDungeon()
+    public void generateDungeon()
     {
         PlayerPrefs.SetInt("keysCollected", 0);
 

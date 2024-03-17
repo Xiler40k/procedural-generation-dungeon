@@ -850,6 +850,7 @@ MonoBehaviour:
   easyButton: {fileID: 698684224}
   mediumButton: {fileID: 707548909}
   hardButton: {fileID: 870888922}
+  inputField: {fileID: 0}
 --- !u!1 &441987808
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,7 +1508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.030259816, g: 0.9433962, b: 0.9270051, a: 0.3254902}
+  m_Color: {r: 0.030259816, g: 0.9433962, b: 0.9270051, a: 0.27450982}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1776,7 +1777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9622642, g: 0.030865014, b: 0.13068582, a: 0.5176471}
+  m_Color: {r: 0.9622642, g: 0.030865014, b: 0.13068582, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
