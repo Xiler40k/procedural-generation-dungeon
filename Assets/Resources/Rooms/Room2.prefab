@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7048664540875181450, guid: 3a551503085a74145900ac021dc6de86, type: 3}
       propertyPath: m_Name
-      value: Room2 Variant
+      value: Room2
       objectReference: {fileID: 0}
     - target: {fileID: 7048664540875181450, guid: 3a551503085a74145900ac021dc6de86, type: 3}
       propertyPath: m_IsActive
@@ -2654,7 +2654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9114109914734464226, guid: 3a551503085a74145900ac021dc6de86, type: 3}
       propertyPath: m_RootOrder
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9114109914734464226, guid: 3a551503085a74145900ac021dc6de86, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2697,7 +2697,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4878403273381217640, guid: 3a551503085a74145900ac021dc6de86, type: 3}
+    - {fileID: 1272366934576973248, guid: 3a551503085a74145900ac021dc6de86, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a551503085a74145900ac021dc6de86, type: 3}

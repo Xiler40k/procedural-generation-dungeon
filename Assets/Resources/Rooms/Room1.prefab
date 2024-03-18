@@ -330,7 +330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2131725402280826510, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
       propertyPath: m_Name
-      value: Room 2 (fixed) Variant 1
+      value: Room1
       objectReference: {fileID: 0}
     - target: {fileID: 7431600044111321324, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
       propertyPath: m_LocalPosition.x

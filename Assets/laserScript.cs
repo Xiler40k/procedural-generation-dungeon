@@ -12,7 +12,7 @@ public class laserScript : MonoBehaviour
         {
             Debug.Log("hit2");
             var combatScript = GameObject.Find("gun").GetComponent<combat>();
-            combatScript.health -= 1;
+            combatScript.takeDamage(1);
             combatScript.StartCoroutine(combatScript.takeKnockback(laser.transform.position));
         }
     }

@@ -70,8 +70,8 @@ public class enemy2Script : MonoBehaviour
         if(collision.gameObject.tag == "Character" && canAttack == true)
         {
             //Deals damage to player
-            GameObject.Find("gun").GetComponent<combat>().health -= damage;
-            Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().health);
+            GameObject.Find("gun").GetComponent<combat>().takeDamage(damage);
+            Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().playerHealth);
             canAttack = false;
             //deal knockback to enemy
             isStunned = true;

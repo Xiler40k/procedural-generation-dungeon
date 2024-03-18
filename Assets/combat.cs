@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+
 
 public class combat : MonoBehaviour
 {
@@ -17,10 +19,15 @@ public class combat : MonoBehaviour
     public TMPro.TextMeshProUGUI tpText;
     public bool canTp = true;
     bool isReloading = false;
-    public float health = 6.0f;
+    public float playerHealth = 6;
     public string selectedColor = "White";
 
     public movement movementScript;
+    public GameObject[] hearts;
+    public Sprite fullHeartSprite;
+    public Sprite halfHeartSprite;
+    public Sprite emptyHeartSprite;
+    public AudioClip gunshot;
 
     
     // Update is called once per frame
@@ -34,7 +41,7 @@ public class combat : MonoBehaviour
     }
     void Update()
     {
-        if (health <= 0)
+        if (playerHealth <= 0)
         {
             Debug.Log("Ded");
             //stop script
@@ -96,6 +103,8 @@ public class combat : MonoBehaviour
     {
         Rigidbody2D bullet = Instantiate(rbBullet, rb.position + (direction.normalized * bulletDistance), Quaternion.identity);
         bullet.velocity = direction.normalized * bulletVelocity;
+        //plays gunshot sound
+        AudioSource.PlayClipAtPoint(gunshot, rb.position);
     }
 
     void shootCircle(Vector2 direction) //player probs shouldnt have this?
@@ -158,5 +167,28 @@ public class combat : MonoBehaviour
         rb.AddForce(knockbackDirection * 5, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.2f);
         movementScript.canMove = true;
+    }
+
+    public void takeDamage(float damage)
+    {
+        playerHealth -= damage;
+        var fullHearts = Math.Floor(playerHealth / 2) ;
+        var halfHearts = playerHealth % 2;
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (i < fullHearts)
+            {
+                hearts[i].GetComponent<Image>().sprite = fullHeartSprite;
+            }
+            else if (i == fullHearts && halfHearts == 1)
+            {
+                hearts[i].GetComponent<Image>().sprite = halfHeartSprite;
+            }
+            else
+            {
+                hearts[i].GetComponent<Image>().sprite = emptyHeartSprite;
+            }
+        }
     }
 }

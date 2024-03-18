@@ -12,8 +12,8 @@ public class enemyBulletScript : MonoBehaviour
 
         if (collision.gameObject.tag == "Character")
         {
-            GameObject.Find("gun").GetComponent<combat>().health -= damage;
-            Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().health);
+            GameObject.Find("gun").GetComponent<combat>().takeDamage(damage);
+            Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().playerHealth);
         }
     }
 }
