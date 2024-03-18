@@ -6,12 +6,13 @@ using UnityEngine;
 public class seedScript : MonoBehaviour
 {
     private int seed;
-    int setSeed(int seed)
+    public int setSeed(int seedInp)
     {
-        UnityEngine.Random.InitState(seed);
+        seed = seedInp;
+        UnityEngine.Random.InitState(seedInp);
         return seed;
     }
-    int randomSeed()
+    public int randomSeed()
     {
         seed = UnityEngine.Random.Range(0, 1000000000);
         return seed;

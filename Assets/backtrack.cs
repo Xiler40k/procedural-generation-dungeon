@@ -11,7 +11,7 @@ public class Backtrack : MonoBehaviour
 
     public int pointer = 1; //next available space
 
-    void Start()
+    void Awake()
     {
         dataArray[0] = new Tuple<Vector2, string, int>(new Vector2(0,8), "up", -1);
     }

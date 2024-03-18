@@ -8,7 +8,7 @@ public class HashGrid : MonoBehaviour
     
     public Dictionary<int, int> hashGrid;
 
-    void Start() 
+    void Awake() 
     {
         hashGrid = new Dictionary<int, int>();
     }
@@ -36,7 +36,6 @@ public class HashGrid : MonoBehaviour
             {
                 key = generateKey(new Vector2(bottomLeftCorner.x + i, bottomLeftCorner.y + j));
                 hashGrid[key] = 1;
-                
             }
         }
     } 

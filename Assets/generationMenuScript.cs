@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class generationMenuScript : MonoBehaviour
 {
@@ -11,7 +12,8 @@ public class generationMenuScript : MonoBehaviour
     public GameObject easyButton;
     public GameObject mediumButton;
     public GameObject hardButton;
-    public GameObject inputField;
+    public GameObject seedErrorText;
+    public TMP_InputField inputField;
 
     public void OnEnable()
     {
@@ -21,18 +23,30 @@ public class generationMenuScript : MonoBehaviour
             mediumButtonPressed();
         } else if (PlayerPrefs.GetString("difficulty") == "hard") {
             hardButtonPressed();
+        } else {
+            //default difficulty if none were selected before.
+            easyButtonPressed();
         }
-        
-        //no obvious way to check for if an inut field has changed?
     }
     public void generateDungeon()
     {
-        SceneManager.LoadScene("Game");
-        //get generation script
-
-        //if ()
-        
-        //GameObject.Find("Grid").GetComponent<Generation>().generateDungeon();
+        if (inputField.text == "")
+        {
+            PlayerPrefs.SetInt("generateDungeon", 1);
+            SceneManager.LoadScene("Game");
+            PlayerPrefs.SetInt("seed", 0);
+        }
+        else
+        {
+            if (int.Parse(inputField.text) > 1000000000 || int.Parse(inputField.text) < 0)
+            {
+                StartCoroutine(showSeedError());
+                return;
+            }
+            PlayerPrefs.SetInt("seed", int.Parse(inputField.text));
+            PlayerPrefs.SetInt("generateDungeon", 1);
+            SceneManager.LoadScene("Game");
+        }
     }
 
     public void backButton()
@@ -66,4 +80,11 @@ public class generationMenuScript : MonoBehaviour
     }
 
     //could be re-done by getting highlighted button, chnagin its alpha value to 1 and other to 125/255f.
+
+    IEnumerator showSeedError()
+    {
+        seedErrorText.SetActive(true);
+        yield return new WaitForSeconds(3);
+        seedErrorText.SetActive(false);
+    }
 }

@@ -11,24 +11,50 @@ public class Generation : MonoBehaviour
     public GameObject hCorridor;
     private int recursions = 0;
     private int targetRecursions = 6; // this is desired number of rooms per path iteration. 
-
+    private int[] targetRecursionsArray = new int[3] { 3, 3, 5 } ;
     HashGrid hashTable;
     Backtrack backtrack;
-
+    seedScript SeedScript;
     bool isBacktracking = false;
-
     public Vector2 storedExitCoords;
     public int allDirectionsTriedCounter = 0;
-
     bool isFirstIteration = true;
-
     private int pathNumber = 1;
 
     // Start is called before the first frame update
 
-    void Start()
+    void Awake()
     {
-        generateDungeon();
+        PlayerPrefs.SetInt("keysCollected", 0);
+
+        //based on what difficulty the user chose, set the targetrecursionsarray
+        if (PlayerPrefs.GetString("difficulty") == "medium")
+        {
+            targetRecursionsArray = new int[] { 3, 5, 6 };
+            Debug.Log("Medium mode chosen");
+
+        } else if (PlayerPrefs.GetString("difficulty") == "hard")
+        {
+            targetRecursionsArray = new int[] { 6, 6, 6 };
+            Debug.Log("Hard mode chosen");
+        }
+
+        SeedScript = GameObject.Find("SeedSystem").GetComponent<seedScript>();
+        if (PlayerPrefs.GetInt("seed") != 0)
+        {
+            SeedScript.setSeed(PlayerPrefs.GetInt("seed"));
+            Debug.Log("Seed set to " + PlayerPrefs.GetInt("seed"));
+        } else {
+            SeedScript.randomSeed();
+        }
+
+
+        if (PlayerPrefs.GetInt("generateDungeon") == 1)
+        {
+            generateDungeon();
+            PlayerPrefs.SetInt("generateDungeon", 0);
+        }
+
     }
     public void generateDungeon()
     {
@@ -58,6 +84,7 @@ public class Generation : MonoBehaviour
 
         isBacktracking = false;
         pathNumber = 1;
+        targetRecursions = targetRecursionsArray[0];
         chooseHallwayRandom(startingVect, "up", -1, isBacktracking, true);
         clearStack();
         //resetTriedArray();
@@ -70,6 +97,7 @@ public class Generation : MonoBehaviour
         startingVect = new Vector2(-14, 0);
         isBacktracking = false;
         pathNumber = 2;
+        targetRecursions = targetRecursionsArray[1];
         chooseHallwayRandom(startingVect, "left", -1, isBacktracking, true);
         clearStack();
         recursions = 0;
@@ -81,6 +109,7 @@ public class Generation : MonoBehaviour
         isBacktracking = false;
         //resetTriedArray();
         pathNumber = 3;
+        targetRecursions = targetRecursionsArray[2];
         chooseHallwayRandom(startingVect, "down", -1, isBacktracking, true);
         
     }
@@ -610,8 +639,6 @@ public class Generation : MonoBehaviour
         //resetTriedArray();
         clearStack();
         recursions = 0;
-        Start();
-
     }
 }
 
