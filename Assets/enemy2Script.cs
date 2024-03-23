@@ -17,6 +17,7 @@ public class enemy2Script : MonoBehaviour
     public bool canAttack = true;
     public bool isStunned = false;
     public Vector2 direction;
+    public bool playerExitedSpawn = false;
     
 
     void Start() {
@@ -26,12 +27,18 @@ public class enemy2Script : MonoBehaviour
 
     void Update()
     {
+        if (PlayerPrefs.GetInt("exitedSpawn") == 1)
+        {
+            playerExitedSpawn = true;
+        }
+
+
         if (health <= 0)
         {
             Destroy(gameObject);
         }
 
-        if (shouldBeChasing() && !isStunned)
+        if (shouldBeChasing() && !isStunned && playerExitedSpawn)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;

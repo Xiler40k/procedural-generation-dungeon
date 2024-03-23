@@ -19,6 +19,7 @@ public class enemy3Script : MonoBehaviour
     public bool isEscaping = false; //moves enemy away from player
     public Vector2 direction;
     //public int damage = 2
+    public bool playerExitedSpawn = false;
 
     void Start() {
         rb = this.GetComponent<Rigidbody2D>();
@@ -27,6 +28,11 @@ public class enemy3Script : MonoBehaviour
 
     void Update()
     {
+        if (PlayerPrefs.GetInt("exitedSpawn") == 1)
+        {
+            playerExitedSpawn = true;
+        }
+
         if (health <= 0)
         {
             /*
@@ -47,7 +53,7 @@ public class enemy3Script : MonoBehaviour
             isEscaping = false;
         }
 
-        if (shouldBeChasing() && isEscaping == false && isShooting == false && isStunned == false)
+        if (shouldBeChasing() && isEscaping == false && isShooting == false && isStunned == false && playerExitedSpawn)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;
@@ -58,7 +64,7 @@ public class enemy3Script : MonoBehaviour
             isChasing = false;
         }
 
-        if (canShoot && getDistance() <= 10)
+        if (canShoot && getDistance() <= 10 && playerExitedSpawn)
         {
             StartCoroutine(attack());
             rb.velocity = new Vector2(0, 0);
@@ -79,7 +85,7 @@ public class enemy3Script : MonoBehaviour
     {
         var dist = getDistance();
         // great than so it stops at larger distance
-        if (dist > targetDistance)
+        if (dist > targetDistance && dist < 15)
         {
             return true;
         }

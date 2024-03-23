@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6315037097199731186}
   - component: {fileID: 3051302133519996300}
   - component: {fileID: 2901308441750813618}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Enemy2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -184,3 +184,4 @@ MonoBehaviour:
   canAttack: 1
   isStunned: 0
   direction: {x: 0, y: 0}
+  playerExitedSpawn: 0

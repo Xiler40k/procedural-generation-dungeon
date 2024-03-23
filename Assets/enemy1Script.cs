@@ -18,6 +18,7 @@ public class enemy1Script : MonoBehaviour
     public bool canShoot = true;
     public bool isStunned = false;
     public Vector2 direction;
+    public bool playerExitedSpawn = false;
 
     void Start() {
         rb = this.GetComponent<Rigidbody2D>();
@@ -26,6 +27,11 @@ public class enemy1Script : MonoBehaviour
 
     void Update()
     {
+        if (PlayerPrefs.GetInt("exitedSpawn") == 1)
+        {
+            playerExitedSpawn = true;
+        }
+
         if (health <= 0)
         {
             /*
@@ -36,7 +42,7 @@ public class enemy1Script : MonoBehaviour
         }
 
 
-        if (shouldBeChasing() && isShooting == false && isStunned == false)
+        if (shouldBeChasing() && isShooting == false && isStunned == false && playerExitedSpawn)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;
@@ -47,7 +53,7 @@ public class enemy1Script : MonoBehaviour
             isChasing = false;
         }
 
-        if (canShoot && getDistance() < attackDistance)
+        if (canShoot && getDistance() < attackDistance && playerExitedSpawn)
         {
             StartCoroutine(attack());
             rb.velocity = new Vector2(0, 0);

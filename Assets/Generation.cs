@@ -9,12 +9,14 @@ public class Generation : MonoBehaviour
     public GameObject parent; //not used
     public GameObject vCorridor; 
     public GameObject hCorridor;
+    public GameObject enemySystemObject;
     private int recursions = 0;
     private int targetRecursions = 6; // this is desired number of rooms per path iteration. 
     private int[] targetRecursionsArray = new int[3] { 3, 3, 5 } ;
     HashGrid hashTable;
     Backtrack backtrack;
     seedScript SeedScript;
+    mobSpawnScript enemySpawnScript;
     bool isBacktracking = false;
     public Vector2 storedExitCoords;
     public int allDirectionsTriedCounter = 0;
@@ -26,6 +28,7 @@ public class Generation : MonoBehaviour
     void Awake()
     {
         PlayerPrefs.SetInt("keysCollected", 0);
+        enemySpawnScript = enemySystemObject.GetComponent<mobSpawnScript>();
 
         //based on what difficulty the user chose, set the targetrecursionsarray
         if (PlayerPrefs.GetString("difficulty") == "medium")
@@ -71,7 +74,7 @@ public class Generation : MonoBehaviour
         //hallway, right, (12,0), length 14
         hashTable.addHallway(new Vector2(12, 0), "right", 14);
         //room, centre (39, 0) Room Dimensions: (24, 24)
-        hashTable.addRoom(new Vector2(39, 0), new Vector2(24, 24));
+        hashTable.addRoom(new Vector2(41, 0), new Vector2(28, 28));
 
 
         var spawnRoom = Instantiate(startingRoom, new Vector2(0, 0), Quaternion.identity, gameObject.transform); //doesn't need to be a variable
@@ -148,27 +151,30 @@ public class Generation : MonoBehaviour
             triedArray = new int[5];
         }
 
-        if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3) && isBacktracking == true)
+        if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3)) // &&isBacktracking == true)
         {
             //If backtracking to a room that has already tried all directions, then every exits shouldn't close????
             Debug.Log("All directions have been tried. No exits should close. Backtracking");
             generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
             return;
         }
-        else if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3))
+        /*else if (((triedArray[0] + triedArray[1] + triedArray[2] + triedArray[3]) >= 3))
         {
             Debug.Log("All directions have been tried. Backtracking");
             closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection);
             generationBacktrack(currentVect, previousDirection, previousRoomNumber, false);
             return;
-        }
+        }*/
 
         if ((randomBacktrack < 50 && recursions > 2)) // make not possible if already in backtrack process
         {
             // make not possible if already in backtrack process
             if (!isBacktracking) {
                 Debug.Log("Random backtrack chosen");
-                closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection);
+                if (backtrack.checkFirstIteration(currentVect) == true)
+                {
+                   closeCurrentExits(currentVect, getRoomInfo(previousRoomNumber - 1), previousDirection); 
+                }
                 generationBacktrack(currentVect, previousDirection, previousRoomNumber, true);
                 return;
             }
@@ -258,7 +264,7 @@ public class Generation : MonoBehaviour
 
         var randomHallwayCount = UnityEngine.Random.Range(2, 7);
 
-        
+        //seed 76946132 error
         checkHallway(currentVect, dirToExit, direction, directionN, randomHallwayCount, previousDirection, previousRoomNumber);
 
         //spawnHallwayRandom(currentVect, dirToExit, direction);
@@ -309,6 +315,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit1");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+            Debug.Log("Right exit closed");
             
             backtrack.addExitObject(vectToClose, exit);
         }
@@ -318,6 +325,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit2");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+            Debug.Log("Left exit closed");
 
             backtrack.addExitObject(vectToClose, exit);
         }
@@ -327,6 +335,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit3");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+            Debug.Log("Up exit closed");
 
             backtrack.addExitObject(vectToClose, exit);
         }
@@ -336,6 +345,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             addObjectToStack(exit);
+            Debug.Log("Down exit closed");
 
             backtrack.addExitObject(vectToClose, exit);
         }
@@ -443,10 +453,12 @@ public class Generation : MonoBehaviour
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
         //stil don't know it this is false or true but false seems to work better D:
-        isBacktracking = false;
+        isBacktracking = false; //if changed to true, then some exits don't
 
-        backtrack.roomHasntSpawned(backtrack.retrieveInformation(0).Item1);
-
+        if (backtrack.checkFirstIteration(backInfo.Item1) == true)
+        {
+            backtrack.roomHasntSpawned(backtrack.retrieveInformation(0).Item1);
+        }
 
         chooseHallwayRandom(backInfo.Item1, backInfo.Item2, backInfo.Item3, isBacktracking, isFirstIteration);
     }
@@ -490,6 +502,8 @@ public class Generation : MonoBehaviour
         Debug.Log("The CurrentVect of the the most recently installed room is " + currentVect);
 
         hashTable.addRoom(currentVect, roomDimensions);
+
+        enemySpawnScript.spawnMobs(currentVect, roomDimensions);
 
         incrementRecursionCounter(currentVect, direction, roomNumber);
         //currentVect += getRoomInfo((direction == "right" || direction == "left") || (direction == "up" || direction == "down") ? ((direction == "right") ? 1 : 2) : ((direction == "up") ? 3 : 4))
@@ -603,6 +617,7 @@ public class Generation : MonoBehaviour
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             // no need for addObjectToStack(exit); as the exit is not part of the path and the objects will not need to be deleted
             backtrack.addExitObject(vectToClose, exit);
+            Debug.Log("Closed current right exit");
         }
         if (previousDirection != "right")
         {
@@ -610,6 +625,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit2");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             backtrack.addExitObject(vectToClose, exit);
+            Debug.Log("Closed current left exit");
             
         }
         if (previousDirection != "down")
@@ -618,6 +634,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit3");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             backtrack.addExitObject(vectToClose, exit);
+            Debug.Log("Closed current up exit");
             
         }
         if (previousDirection != "up")
@@ -626,6 +643,7 @@ public class Generation : MonoBehaviour
             exitPrefab = Resources.Load<GameObject>("Exits/Exit4");
             var exit = Instantiate(exitPrefab, vectToClose, Quaternion.identity, gameObject.transform);
             backtrack.addExitObject(vectToClose, exit);
+            Debug.Log("Closed current down exit");
             
         }
     }

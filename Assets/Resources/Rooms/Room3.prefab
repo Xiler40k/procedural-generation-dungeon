@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2283959059540603674}
   - component: {fileID: 5098319781717892632}
   - component: {fileID: 683861927920046745}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -875,7 +875,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 5
-      m_TileSpriteIndex: 3
+      m_TileSpriteIndex: 5
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -930,12 +930,12 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: 56750229, guid: cc99d596512550f4bbd92387df448e13, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: -1693940658, guid: cc99d596512550f4bbd92387df448e13, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: -1693940658, guid: cc99d596512550f4bbd92387df448e13, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 56750229, guid: cc99d596512550f4bbd92387df448e13, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 1536900084, guid: cc99d596512550f4bbd92387df448e13, type: 3}
   - m_RefCount: 2
@@ -1186,7 +1186,8 @@ GameObject:
   - component: {fileID: 6952827296659809239}
   - component: {fileID: 703936003258477647}
   - component: {fileID: 5884155202763045765}
-  m_Layer: 0
+  - component: {fileID: 6118003031234441771}
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2147,3 +2148,39 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!19719996 &6118003031234441771
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5549319558674291620}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0

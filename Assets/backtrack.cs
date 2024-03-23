@@ -18,11 +18,11 @@ public class Backtrack : MonoBehaviour
 
     public void addBacktrack(Vector2 currentVect, string previousDirection, int previousRoomNumber)
     {
-        /* var tupleToCheck = dataArray[pointer - 1];
+        var tupleToCheck = dataArray[pointer - 1];
         if (tupleToCheck.Item1 == currentVect)
         {
             return;
-        } */
+        }
         dataArray[pointer] = new Tuple<Vector2, string, int>(currentVect, previousDirection, previousRoomNumber);
         pointer++;
     }

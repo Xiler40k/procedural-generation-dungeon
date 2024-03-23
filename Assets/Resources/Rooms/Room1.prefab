@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 589104981648783569, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1018569463535167906, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
       propertyPath: m_UsedByComposite
       value: 0
@@ -332,6 +336,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Room1
       objectReference: {fileID: 0}
+    - target: {fileID: 5358188407487783071, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7431600044111321324, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
@@ -346,7 +354,51 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2131725402280826510, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
       insertIndex: -1
       addedObject: {fileID: -3895981203384556055}
+    - targetCorrespondingSourceObject: {fileID: 5358188407487783071, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8958569827463781775}
   m_SourcePrefab: {fileID: 100100000, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
+--- !u!1 &3898023874969549723 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5358188407487783071, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}
+  m_PrefabInstance: {fileID: 8954435858306554628}
+  m_PrefabAsset: {fileID: 0}
+--- !u!19719996 &8958569827463781775
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3898023874969549723}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &7048664540875181450 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2131725402280826510, guid: 7537321d9c5822f428fb1d86c7eda67c, type: 3}

@@ -38,14 +38,21 @@ public class generationMenuScript : MonoBehaviour
         }
         else
         {
-            if (int.Parse(inputField.text) > 1000000000 || int.Parse(inputField.text) < 0)
+            if (int.Parse(inputField.text) < 2147483647 || int.Parse(inputField.text) < 0)
             {
-                StartCoroutine(showSeedError());
-                return;
+                PlayerPrefs.SetInt("seed", int.Parse(inputField.text));
+                PlayerPrefs.SetInt("generateDungeon", 1);
+                SceneManager.LoadScene("Game");
+            } else {
+                if (isInt(inputField.text) == true) {
+                    StartCoroutine(showSeedError());
+                    return;
+                } else {
+                    StartCoroutine(showLetterError());
+                    return;
+                }
+                
             }
-            PlayerPrefs.SetInt("seed", int.Parse(inputField.text));
-            PlayerPrefs.SetInt("generateDungeon", 1);
-            SceneManager.LoadScene("Game");
         }
     }
 
@@ -83,8 +90,24 @@ public class generationMenuScript : MonoBehaviour
 
     IEnumerator showSeedError()
     {
+        seedErrorText.GetComponent<TextMeshProUGUI>().text = "Seed must be less than 2147483647";
         seedErrorText.SetActive(true);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         seedErrorText.SetActive(false);
+    }
+
+    IEnumerator showLetterError()
+    {
+        seedErrorText.GetComponent<TextMeshProUGUI>().text = "Seed must be a number!";
+        seedErrorText.SetActive(true);
+        yield return new WaitForSeconds(2);
+        seedErrorText.SetActive(false);
+    }
+
+    bool isInt(string input)
+    {
+        //returns if a string is an integer
+        int num;
+        return int.TryParse(input, out num);
     }
 }

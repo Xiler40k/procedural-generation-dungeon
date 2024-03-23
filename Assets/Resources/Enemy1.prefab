@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5734648573040147123}
   - component: {fileID: 2950074779334656621}
   - component: {fileID: 26503495577155348}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Enemy1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6720122009152814949}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 3.1, y: 3.1, z: 1.2}
+  m_LocalScale: {x: 3.1, y: 3.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -178,4 +178,6 @@ MonoBehaviour:
   isChasing: 0
   isShooting: 0
   canShoot: 1
+  isStunned: 0
   direction: {x: 0, y: 0}
+  playerExitedSpawn: 0

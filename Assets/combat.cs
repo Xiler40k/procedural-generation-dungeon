@@ -38,9 +38,12 @@ public class combat : MonoBehaviour
         panel.GetComponent<Image>().color = bulletColorCodes2[colorIndex];
 
         movementScript = GameObject.Find("Character").GetComponent<movement>();
+        PlayerPrefs.SetInt("exitedSpawn", 0);
     }
     void Update()
     {
+        exitSpawnCheck();
+
         if (playerHealth <= 0)
         {
             Debug.Log("Ded");
@@ -82,6 +85,16 @@ public class combat : MonoBehaviour
         {
             changeColor();
         } 
+    }
+
+    void exitSpawnCheck() {
+        if (Mathf.Abs(rb.transform.position.x) > 17 || Mathf.Abs(rb.transform.position.y) > 10)
+        {
+            PlayerPrefs.SetInt("exitedSpawn", 1);
+        }
+        else {
+            PlayerPrefs.SetInt("exitedSpawn", 0);
+        }
     }
 
     public string[] bulletColors2 = new string[] {"White", "Orange", "Blue", "Green", "Yellow"};
