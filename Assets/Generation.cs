@@ -11,7 +11,7 @@ public class Generation : MonoBehaviour
     public GameObject hCorridor;
     public GameObject enemySystemObject;
     private int recursions = 0;
-    private int targetRecursions = 6; // this is desired number of rooms per path iteration. 
+    private int targetRecursions = 6; // this is desired number of rooms per path iteration. (not needed anymore) 
     private int[] targetRecursionsArray = new int[3] { 3, 3, 5 } ;
     HashGrid hashTable;
     Backtrack backtrack;
@@ -24,7 +24,6 @@ public class Generation : MonoBehaviour
     private int pathNumber = 1;
 
     // Start is called before the first frame update
-
     void Awake()
     {
         PlayerPrefs.SetInt("keysCollected", 0);
@@ -38,7 +37,7 @@ public class Generation : MonoBehaviour
 
         } else if (PlayerPrefs.GetString("difficulty") == "hard")
         {
-            targetRecursionsArray = new int[] { 6, 6, 6 };
+            targetRecursionsArray = new int[] { 12, 12, 12 }; //chnage spacing here
             Debug.Log("Hard mode chosen");
         }
 
@@ -113,6 +112,17 @@ public class Generation : MonoBehaviour
         //resetTriedArray();
         pathNumber = 3;
         targetRecursions = targetRecursionsArray[2];
+        chooseHallwayRandom(startingVect, "down", -1, isBacktracking, true);
+
+        //Fix invisble walls???? YESSSSSSSSSSSSSSSSSSSSSSSSSSSS
+        clearStack();
+        recursions = 0;
+
+        startingVect = new Vector2(0, -500);
+        isBacktracking = false;
+        //resetTriedArray();
+        pathNumber = 3;
+        targetRecursions = 5;
         chooseHallwayRandom(startingVect, "down", -1, isBacktracking, true);
         
     }
@@ -292,7 +302,13 @@ public class Generation : MonoBehaviour
             //var backInfo = backtrack.retrieveInformation(0);
             triedArray[directionN - 1] = 1;
             //now while the 4th parameter (isBacktracking) is true, this si only to prevent another copy of the data being added to the backtrack system.
-            isBacktracking = false;
+            if (isBacktracking == true)
+            {
+                isBacktracking = true;
+            } else {
+                isBacktracking = false;
+            }
+
             if (backtrack.checkFirstIteration(currentVect) == true)
             {
                 backtrack.roomHasntSpawned(currentVect);
@@ -453,7 +469,15 @@ public class Generation : MonoBehaviour
         Debug.Log("The size of the stack after exits deleted is " + lastObjectInstantiated.Count);
         var backInfo = backtrack.retrieveInformation(0);
         //stil don't know it this is false or true but false seems to work better D:
-        isBacktracking = false; //if changed to true, then some exits don't
+
+        if (!isBacktracking) {
+            isBacktracking = false; //if changed to true, then some exits don't
+        } else {
+            isBacktracking = true;
+        }
+        
+
+
 
         if (backtrack.checkFirstIteration(backInfo.Item1) == true)
         {

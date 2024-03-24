@@ -7,7 +7,7 @@ public class enemy2Script : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Rigidbody2D rbPlayer;
-    public float speed = 4f;
+    public float speed = 8f;
     public float health = 5f;
     private float targetDistance = 20f;
     int damage = 1;
@@ -49,11 +49,11 @@ public class enemy2Script : MonoBehaviour
             isChasing = false;
         }
 
-        if(rb.velocity.magnitude <= 0.1 && isChasing == true && isAttacking == false)
+        if(rb.velocity.magnitude < 1 && isChasing == true && isAttacking == false)
         {
             //try a suitable direction based on direction from character to player
             direction = rbPlayer.position - rb.position;
-            rb.velocity = new Vector2((direction.x < 0 ? -3 : 3) * speed, (direction.y < 0 ? -3 : 3) * speed);
+            rb.velocity = new Vector2((direction.x < 0 ? -10 : 10) * speed, (direction.y < 0 ? -10 : 10) * speed);
         }
     }
 
