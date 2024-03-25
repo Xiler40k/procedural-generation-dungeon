@@ -18,6 +18,7 @@ public class combat : MonoBehaviour
     public TMPro.TextMeshProUGUI ammoText;
     public TMPro.TextMeshProUGUI tpText;
     public bool canTp = true;
+    public bool canMove = true;
     bool isReloading = false;
     public float playerHealth = 6;
     public string selectedColor = "White";
@@ -29,6 +30,9 @@ public class combat : MonoBehaviour
     public Sprite emptyHeartSprite;
     public AudioClip gunshot;
 
+    public GameObject pauseMenu;
+    public int pauseInt = 0;
+
     
     // Update is called once per frame
 
@@ -39,10 +43,15 @@ public class combat : MonoBehaviour
 
         movementScript = GameObject.Find("Character").GetComponent<movement>();
         PlayerPrefs.SetInt("exitedSpawn", 0);
+        PlayerPrefs.SetInt("Paused", 0);
     }
     void Update()
     {
         exitSpawnCheck();
+
+        if(!canMove) {
+            rb.velocity = new Vector2(0,0);
+        }
 
         if (playerHealth <= 0)
         {
@@ -52,7 +61,18 @@ public class combat : MonoBehaviour
         }
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (Input.GetMouseButtonDown(0) && bulletsInChamber > 0)
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            pauseInt = (pauseInt + 1) % 2;
+            PlayerPrefs.SetInt("Paused", pauseInt);
+
+            if (pauseInt == 1) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0) && bulletsInChamber > 0 && canMove)
         {
             //passes vector from player to mouse
             shootBullet(new Vector2 (mousePosition.x, mousePosition.y) - rb.position);
@@ -62,7 +82,7 @@ public class combat : MonoBehaviour
             ammoText.text = bulletsInChamber.ToString() + "/6";
         }
         //if space bar pressed 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && canMove)
         {
             if (bulletsInChamber >= 6)
             {
@@ -70,18 +90,18 @@ public class combat : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && canMove)
         {
             isReloading = true;
             StartCoroutine(reload());
         }
 
-        if (Input.GetKeyDown(KeyCode.T) && canTp)
+        if (Input.GetKeyDown(KeyCode.T) && canTp && canMove)
         {
             teleport(mousePosition);
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && canMove)
         {
             changeColor();
         } 

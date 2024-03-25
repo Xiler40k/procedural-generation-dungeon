@@ -23,7 +23,9 @@ public class shockwaveScript : MonoBehaviour
         if (collision.gameObject.tag == "Character" && shockwaveEnabled == true)
         {
             var combatScript = GameObject.Find("gun").GetComponent<combat>();
-            combatScript.takeDamage(1);
+            if (!isPaused) {
+                combatScript.takeDamage(1);
+            }
             shockwaveEnabled = false;
         }
     }

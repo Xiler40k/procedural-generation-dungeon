@@ -12,7 +12,9 @@ public class enemyBulletScript : MonoBehaviour
 
         if (collision.gameObject.tag == "Character")
         {
-            GameObject.Find("gun").GetComponent<combat>().takeDamage(damage);
+            if (!isPaused) {
+               GameObject.Find("gun").GetComponent<combat>().takeDamage(damage); 
+            }
             Debug.Log("H: " + GameObject.Find("gun").GetComponent<combat>().playerHealth);
         }
     }

@@ -536,7 +536,7 @@ public class Generation : MonoBehaviour
     int chooseRoomRandom()
     {
         //has to be manually added to increase number of rooms.
-        var roomNumber = UnityEngine.Random.Range(1, 4);
+        var roomNumber = UnityEngine.Random.Range(1, 5); //second paramter is exclusive
         return roomNumber;
     }
 
@@ -548,9 +548,10 @@ public class Generation : MonoBehaviour
         Vector2[,] roomArray = new Vector2[,]
         {
             //room dimensions, dirToRight, dirToLeft, dirToUp, dirToDown
-            {new Vector2(6, 6),new Vector2(3, 0),new Vector2(-4, 0),new Vector2(0, 3),new Vector2(0, -4)},
-            {new Vector2(8, 8),new Vector2(4, 0),new Vector2(-5, 0),new Vector2(0, 4),new Vector2(0, -5)},
-            {new Vector2(12,14), new Vector2(6, 2), new Vector2(-7, 0), new Vector2(0, 7), new Vector2(0, -8)}
+            {new Vector2(6, 6), new Vector2(3, 0), new Vector2(-4, 0), new Vector2(0, 3), new Vector2(0, -4)}, //room 1
+            {new Vector2(8, 8), new Vector2(4, 0) ,new Vector2(-5, 0), new Vector2(0, 4), new Vector2(0, -5)}, //room 2 etc
+            {new Vector2(12,14), new Vector2(6, 2), new Vector2(-7, 0), new Vector2(0, 7), new Vector2(0, -8)},
+            {new Vector2(14, 15), new Vector2(7, -2), new Vector2(-8, 0), new Vector2(0, 7), new Vector2(-1, -8) }
         };
 
         List<Vector2> roomInfoList = new List<Vector2>();

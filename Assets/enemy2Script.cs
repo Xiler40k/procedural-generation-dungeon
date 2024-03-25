@@ -18,6 +18,7 @@ public class enemy2Script : MonoBehaviour
     public bool isStunned = false;
     public Vector2 direction;
     public bool playerExitedSpawn = false;
+    public bool isPaused = false;
     
 
     void Start() {
@@ -32,13 +33,20 @@ public class enemy2Script : MonoBehaviour
             playerExitedSpawn = true;
         }
 
+        if (PlayerPrefs.GetInt("Paused") == 1) {
+            isPaused = true;
+            rb.velocity = new Vector2(0,0);
+        } else {
+            isPaused = false;
+        }
+
 
         if (health <= 0)
         {
             Destroy(gameObject);
         }
 
-        if (shouldBeChasing() && !isStunned && playerExitedSpawn)
+        if (shouldBeChasing() && !isStunned && playerExitedSpawn && !isPaused)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;
@@ -49,7 +57,7 @@ public class enemy2Script : MonoBehaviour
             isChasing = false;
         }
 
-        if(rb.velocity.magnitude < 1 && isChasing == true && isAttacking == false)
+        if(rb.velocity.magnitude < 1 && isChasing == true && isAttacking == false && !isPaused)
         {
             //try a suitable direction based on direction from character to player
             direction = rbPlayer.position - rb.position;

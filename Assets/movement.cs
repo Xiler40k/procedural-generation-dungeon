@@ -19,25 +19,30 @@ public class movement : MonoBehaviour
         // takes player inputs for direction (WASD or arrow keys)
         playerDirection.x = Input.GetAxisRaw("Horizontal");
         playerDirection.y = Input.GetAxisRaw("Vertical");
+
+        if (PlayerPrefs.GetInt("Paused") == 1) {
+            canMove = false;
+        } else {
+            canMove = true;
+        }
         
         if (canMove)
         {
             //moves player in direction of input
             rb.MovePosition(rb.position + playerDirection * playerSpeed * Time.fixedDeltaTime);
+            //gets position of mouse (Vector3)
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //calculates angle between player and mouse
+            float angle = (Mathf.Atan2(mousePosition.y - rb.position.y, mousePosition.x - rb.position.x) * Mathf.Rad2Deg);
+
+            //calculates and sets gun position to be 0.72 units away from player in the direction of the mouse
+            float gunDistance = 0.72f;
+            Vector3 gunPosition3 = Quaternion.Euler(0, 0, angle) * new Vector3(gunDistance, 0);
+            Vector2 gunPosition = rb.position + new Vector2(gunPosition3.x, gunPosition3.y);
+
+            rbGun.transform.position = gunPosition;
+            rbGun.transform.rotation = Quaternion.Euler(0, 0, angle);
         }
-
-        //gets position of mouse (Vector3)
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //calculates angle between player and mouse
-        float angle = (Mathf.Atan2(mousePosition.y - rb.position.y, mousePosition.x - rb.position.x) * Mathf.Rad2Deg);
-
-        //calculates and sets gun position to be 0.72 units away from player in the direction of the mouse
-        float gunDistance = 0.72f;
-        Vector3 gunPosition3 = Quaternion.Euler(0, 0, angle) * new Vector3(gunDistance, 0);
-        Vector2 gunPosition = rb.position + new Vector2(gunPosition3.x, gunPosition3.y);
-
-        rbGun.transform.position = gunPosition;
-        rbGun.transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     void FixedUpdate()

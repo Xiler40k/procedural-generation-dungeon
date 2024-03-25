@@ -20,6 +20,7 @@ public class enemy3Script : MonoBehaviour
     public Vector2 direction;
     //public int damage = 2
     public bool playerExitedSpawn = false;
+    public bool isPaused = false;
 
     void Start() {
         rb = this.GetComponent<Rigidbody2D>();
@@ -31,6 +32,13 @@ public class enemy3Script : MonoBehaviour
         if (PlayerPrefs.GetInt("exitedSpawn") == 1)
         {
             playerExitedSpawn = true;
+        }
+
+        if (PlayerPrefs.GetInt("Paused") == 1) {
+            isPaused = true;
+            rb.velocity = new Vector2(0,0);
+        } else {
+            isPaused = false;
         }
 
         if (health <= 0)
@@ -53,7 +61,7 @@ public class enemy3Script : MonoBehaviour
             isEscaping = false;
         }
 
-        if (shouldBeChasing() && isEscaping == false && isShooting == false && isStunned == false && playerExitedSpawn)
+        if (shouldBeChasing() && isEscaping == false && isShooting == false && isStunned == false && playerExitedSpawn && !isPaused)
         {
             isChasing = true;
             direction = rbPlayer.position - rb.position;
@@ -64,7 +72,7 @@ public class enemy3Script : MonoBehaviour
             isChasing = false;
         }
 
-        if (canShoot && getDistance() <= 10 && playerExitedSpawn)
+        if (canShoot && getDistance() <= 10 && playerExitedSpawn && !isPaused)
         {
             StartCoroutine(attack());
             rb.velocity = new Vector2(0, 0);
@@ -73,7 +81,7 @@ public class enemy3Script : MonoBehaviour
 
         //Will need to improve next section for sniper
 
-        if (rb.velocity.magnitude <= 0.1 && isChasing == true && isShooting == false)
+        if (rb.velocity.magnitude <= 0.1 && isChasing == true && isShooting == false && !isPaused)
         {
             //try a suitable direction based on direction from character to player
             direction = rbPlayer.position - rb.position;
