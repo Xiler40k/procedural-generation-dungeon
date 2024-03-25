@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-
 public class combat : MonoBehaviour
 {
     public Rigidbody2D rb;
@@ -29,7 +28,6 @@ public class combat : MonoBehaviour
     public Sprite halfHeartSprite;
     public Sprite emptyHeartSprite;
     public AudioClip gunshot;
-
     public GameObject pauseMenu;
     public int pauseInt = 0;
 
@@ -49,6 +47,12 @@ public class combat : MonoBehaviour
     {
         exitSpawnCheck();
 
+        if (PlayerPrefs.GetInt("Paused") == 1) {
+            canMove = false;
+        } else {
+            canMove = true;
+        }
+
         if(!canMove) {
             rb.velocity = new Vector2(0,0);
         }
@@ -64,7 +68,6 @@ public class combat : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) {
             pauseInt = (pauseInt + 1) % 2;
             PlayerPrefs.SetInt("Paused", pauseInt);
-
             if (pauseInt == 1) {
                 canMove = false;
             } else {

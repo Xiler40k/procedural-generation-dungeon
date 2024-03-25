@@ -9,6 +9,7 @@ TagManager:
   - ExitTag
   - Enemy
   - Character
+  - Boss
   layers:
   - Default
   - TransparentFX

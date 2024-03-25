@@ -9,9 +9,9 @@ public class enemy3Script : MonoBehaviour
     private Rigidbody2D rbPlayer;
     public Rigidbody2D rbEnemyBullet;
     public float speed = 3f;
-    public float health = 2f;
+    public float health = 1f;
     private float targetDistance = 9.5f;
-    public float bulletVelocity = 60f; //sniper predicts 0.8 seconds ahead so 10/0.8 = 12.5 (as a base value)
+    public float bulletVelocity = 50f;
     public bool isChasing = false;
     public bool isShooting = false;
     public bool canShoot = true;
@@ -122,15 +122,18 @@ public class enemy3Script : MonoBehaviour
 
     void shootBullet()
     {
-        //take players diecrion velocity and calc where they will be in 0.8 seconds.
-        var playerVelocity = rbPlayer.velocity * 0.8f;
-        Vector2 futurePosition = rbPlayer.position + playerVelocity;
-        //aim there and shoot
-        direction = futurePosition - rb.position;
-        bulletVelocity = 30f;
-        
-        Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
-        enemyBullet.velocity = direction.normalized * bulletVelocity;
+        if (!isPaused)
+        {
+            //take players diecrion velocity and calc where they will be in 0.8 seconds.
+            var playerVelocity = rbPlayer.velocity * 0.8f;
+            Vector2 futurePosition = rbPlayer.position + playerVelocity;
+            //aim there and shoot
+            direction = futurePosition - rb.position;
+            bulletVelocity = 30f;
+            
+            Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
+            enemyBullet.velocity = direction.normalized * bulletVelocity;
+        }
     }
 
     public IEnumerator takeKnockback()

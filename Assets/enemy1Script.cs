@@ -115,8 +115,10 @@ public class enemy1Script : MonoBehaviour
 
     void shootBullet(Vector2 direction)
     {
-        Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
-        enemyBullet.velocity = direction.normalized * bulletVelocity;
+        if (!isPaused) {
+            Rigidbody2D enemyBullet = Instantiate(rbEnemyBullet, rb.position + (direction.normalized * 0.6f), Quaternion.identity);
+            enemyBullet.velocity = direction.normalized * bulletVelocity;
+        }
     }
 
     public IEnumerator takeKnockback()

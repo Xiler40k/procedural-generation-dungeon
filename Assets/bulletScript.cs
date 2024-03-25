@@ -76,5 +76,17 @@ public class bulletScript : MonoBehaviour
                 collision.gameObject.GetComponent<enemy4Script>().StartCoroutine("takeKnockback");
             }
         }
+
+        if (collision.gameObject.tag == "Boss")
+        {
+            var bossScript = collision.gameObject.GetComponent<bossScript>();
+            if (playerCombatScript.selectedColor == bossScript.currentColor)
+            {
+                bossScript.health -= damage;
+            } else
+            {
+                bossScript.health -= 0.2f * damage;
+            }
+        }
     }
 }

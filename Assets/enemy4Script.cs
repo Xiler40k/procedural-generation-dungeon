@@ -104,7 +104,9 @@ public class enemy4Script : MonoBehaviour
     }
 
     void shockwave() {
-        var shockwave = Instantiate(shockwavePrefab, rb.position, Quaternion.identity);
+        if (!isPaused) {
+            var shockwave = Instantiate(shockwavePrefab, rb.position, Quaternion.identity);
+        }
     }
     public IEnumerator takeKnockback()
     {

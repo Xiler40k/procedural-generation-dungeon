@@ -7,6 +7,9 @@ public class wizardScript : MonoBehaviour
 {
     public GameObject mark;
     public Vector2 wizardVector = new Vector2(3, 1);
+    public GameObject npcGUI;
+
+    public string[] bulletColors2 = new string[] {"White", "Orange", "Blue", "Green", "Yellow"};
 
     void Update()
     {
@@ -16,6 +19,8 @@ public class wizardScript : MonoBehaviour
         if (mouseVector.magnitude < 2) {
             if (Input.GetKeyDown(KeyCode.E)) {
                 mark.SetActive(false);
+                npcGUI.SetActive(true);
+                PlayerPrefs.SetInt("Paused", 1);
             }
         }
     }
