@@ -33,8 +33,8 @@ public class generationMenuScript : MonoBehaviour
         if (inputField.text == "")
         {
             PlayerPrefs.SetInt("generateDungeon", 1);
-            SceneManager.LoadScene("Game");
             PlayerPrefs.SetInt("seed", 0);
+            SceneManager.LoadScene("Game");
         }
         else
         {
@@ -51,7 +51,6 @@ public class generationMenuScript : MonoBehaviour
                     StartCoroutine(showLetterError());
                     return;
                 }
-                
             }
         }
     }

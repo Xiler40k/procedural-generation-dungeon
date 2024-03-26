@@ -13,7 +13,8 @@ public class guideScript : MonoBehaviour
         "Using right click, you can cycle through different bullet colors. Hit enemies with the wrong color and you'll do 5x less damage!",
         "You can teleport once every 10s with 'T' - a timer can be seen in the top right corner.",
         "Collect a key from each path to unlock the boss room to your right.",
-        "Good luck adventurer!"
+        "Press escape to toggle the pause menu, where you can access settings or exit the game!",
+        "Good luck adventurer! Remeber to keep check of your health...."
     };
 
     private int dialoguesNumber = 0;

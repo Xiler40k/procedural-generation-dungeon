@@ -28,6 +28,7 @@ public class combat : MonoBehaviour
     public Sprite halfHeartSprite;
     public Sprite emptyHeartSprite;
     public AudioClip gunshot;
+    public AudioSource audioSource;
     public GameObject pauseMenu;
     public int pauseInt = 0;
 
@@ -42,6 +43,10 @@ public class combat : MonoBehaviour
         movementScript = GameObject.Find("Character").GetComponent<movement>();
         PlayerPrefs.SetInt("exitedSpawn", 0);
         PlayerPrefs.SetInt("Paused", 0);
+        PlayerPrefs.SetInt("InSettingsMenu", 0);
+        
+        //PlayerPrefs.SetInt("Teleport", (int)KeyCode.T);
+        //for testing purposes
     }
     void Update()
     {
@@ -65,9 +70,10 @@ public class combat : MonoBehaviour
         }
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(KeyCode.Escape) && PlayerPrefs.GetInt("InSettingsMenu") == 0) {
             pauseInt = (pauseInt + 1) % 2;
             PlayerPrefs.SetInt("Paused", pauseInt);
+            pauseMenu.SetActive(!pauseMenu.activeSelf);
             if (pauseInt == 1) {
                 canMove = false;
             } else {
@@ -99,7 +105,7 @@ public class combat : MonoBehaviour
             StartCoroutine(reload());
         }
 
-        if (Input.GetKeyDown(KeyCode.T) && canTp && canMove)
+        if (Input.GetKeyDown((KeyCode)PlayerPrefs.GetInt("Teleport")) && canTp && canMove)
         {
             teleport(mousePosition);
         }
@@ -140,7 +146,7 @@ public class combat : MonoBehaviour
         Rigidbody2D bullet = Instantiate(rbBullet, rb.position + (direction.normalized * bulletDistance), Quaternion.identity);
         bullet.velocity = direction.normalized * bulletVelocity;
         //plays gunshot sound
-        AudioSource.PlayClipAtPoint(gunshot, rb.position);
+        audioSource.PlayOneShot(gunshot);
     }
 
     void shootCircle(Vector2 direction) //player probs shouldnt have this?

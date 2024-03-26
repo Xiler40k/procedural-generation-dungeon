@@ -37,7 +37,7 @@ public class Generation : MonoBehaviour
 
         } else if (PlayerPrefs.GetString("difficulty") == "hard")
         {
-            targetRecursionsArray = new int[] { 12, 12, 12 }; //chnage spacing here
+            targetRecursionsArray = new int[] {6, 6, 6}; //chnage spacing here
             Debug.Log("Hard mode chosen");
         }
 
