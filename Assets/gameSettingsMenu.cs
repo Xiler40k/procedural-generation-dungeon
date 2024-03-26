@@ -48,6 +48,9 @@ public class gameSettingsMenu : MonoBehaviour
             //GameObject.Find(keybindToChange + "Text").GetComponent<Text>().text = "......";
             foreach(KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
             {
+                if (isWaitingForInput == false) {
+                    break;
+                }
                 GameObject.Find(keybindToChange + "Text").GetComponent<TMPro.TextMeshProUGUI>().text = "......";
                 //checks if the input is a keycode
                 if (Input.GetKey(keycode)) {
