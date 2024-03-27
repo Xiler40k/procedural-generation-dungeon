@@ -16,6 +16,7 @@ public class seedScript : MonoBehaviour
     {
         seed = UnityEngine.Random.Range(0, 2147483647); //32 bit integer limit
         UnityEngine.Random.InitState(seed);
+        PlayerPrefs.SetInt("seed", seed);
         Debug.Log(seed);
         return seed;
     }

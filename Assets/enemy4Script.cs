@@ -47,6 +47,7 @@ public class enemy4Script : MonoBehaviour
             positionOfDeath = rb.position;
             GameObject.Find("lootSystem").GetDrop();
             */
+            PlayerPrefs.SetInt("enemiesKilledStat", PlayerPrefs.GetInt("enemiesKilledStat") + 1);
             Destroy(gameObject);
         }
 

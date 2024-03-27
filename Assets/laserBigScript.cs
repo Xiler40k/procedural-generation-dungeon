@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class laserScript : MonoBehaviour
+public class laserBigScript : MonoBehaviour
 {
     public GameObject laser;
     void OnCollisionEnter2D(Collision2D collision)
@@ -12,7 +12,7 @@ public class laserScript : MonoBehaviour
         {
             Debug.Log("hit2");
             var combatScript = GameObject.Find("gun").GetComponent<combat>();
-            combatScript.takeDamage(0.5f);
+            combatScript.takeDamage(1f);
             combatScript.StartCoroutine(combatScript.takeKnockback(laser.transform.position));
         }
     }

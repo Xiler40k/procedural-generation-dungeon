@@ -17,7 +17,7 @@ public class wizardScript : MonoBehaviour
         var mouseVector = new Vector2(mousePosition.x, mousePosition.y) - wizardVector;
 
         if (mouseVector.magnitude < 2) {
-            if (Input.GetKeyDown(KeyCode.E)) {
+            if (Input.GetKeyDown((KeyCode)PlayerPrefs.GetInt("Interact"))) {
                 mark.SetActive(false);
                 npcGUI.SetActive(true);
                 PlayerPrefs.SetInt("Paused", 1);

@@ -43,6 +43,7 @@ public class enemy2Script : MonoBehaviour
 
         if (health <= 0)
         {
+            PlayerPrefs.SetInt("enemiesKilledStat", PlayerPrefs.GetInt("enemiesKilledStat") + 1);
             Destroy(gameObject);
         }
 

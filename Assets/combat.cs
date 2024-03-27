@@ -21,7 +21,6 @@ public class combat : MonoBehaviour
     bool isReloading = false;
     public float playerHealth = 6;
     public string selectedColor = "White";
-
     public movement movementScript;
     public GameObject[] hearts;
     public Sprite fullHeartSprite;
@@ -44,6 +43,7 @@ public class combat : MonoBehaviour
         PlayerPrefs.SetInt("exitedSpawn", 0);
         PlayerPrefs.SetInt("Paused", 0);
         PlayerPrefs.SetInt("InSettingsMenu", 0);
+        PlayerPrefs.SetInt("Win", 0);
         
         //PlayerPrefs.SetInt("Teleport", (int)KeyCode.T);
         //for testing purposes
@@ -67,6 +67,10 @@ public class combat : MonoBehaviour
             Debug.Log("Ded");
             //stop script
             this.enabled = false;
+            PlayerPrefs.SetInt("Pasued", 1);
+
+            //load tombstone and place it at player's closest tile position 
+            StartCoroutine(lostGame());
         }
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -214,7 +218,7 @@ public class combat : MonoBehaviour
     public void takeDamage(float damage)
     {
         playerHealth -= damage;
-        var fullHearts = Math.Floor(playerHealth / 2) ;
+        var fullHearts = Math.Floor(Math.Ceiling(playerHealth) / 2) ;
         var halfHearts = playerHealth % 2;
 
         for (int i = 0; i < 3; i++)
@@ -232,5 +236,12 @@ public class combat : MonoBehaviour
                 hearts[i].GetComponent<Image>().sprite = emptyHeartSprite;
             }
         }
+    }
+
+    IEnumerator lostGame()
+    {
+        yield return new WaitForSeconds(2);
+        PlayerPrefs.SetInt("Paused", 1);
+        GameObject.Find("Boss").GetComponent<bossScript>().lost(); 
     }
 }
