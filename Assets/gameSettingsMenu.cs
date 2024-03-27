@@ -17,6 +17,13 @@ public class gameSettingsMenu : MonoBehaviour
         volumeSlider.value = PlayerPrefs.GetFloat("Volume");
         PlayerPrefs.SetInt("InSettingsMenu", 1);
 
+        if (PlayerPrefs.GetInt("Teleport") == 0) {
+            PlayerPrefs.SetInt("Teleport", (int)KeyCode.T);
+        }
+        if (PlayerPrefs.GetInt("Interact") == 0) {
+            PlayerPrefs.SetInt("Interact", (int)KeyCode.E);
+        }
+
         GameObject.Find("TeleportText").GetComponent<TMPro.TextMeshProUGUI>().text = ((KeyCode)PlayerPrefs.GetInt("Teleport")).ToString();
         GameObject.Find("InteractText").GetComponent<TMPro.TextMeshProUGUI>().text = ((KeyCode)PlayerPrefs.GetInt("Interact")).ToString();
     }
@@ -54,6 +61,9 @@ public class gameSettingsMenu : MonoBehaviour
                 GameObject.Find(keybindToChange + "Text").GetComponent<TMPro.TextMeshProUGUI>().text = "......";
                 //checks if the input is a keycode
                 if (Input.GetKey(keycode)) {
+                    if (keycode == KeyCode.Mouse0 || keycode == KeyCode.Mouse1 || (int)keycode == PlayerPrefs.GetInt("Interact") || (int)keycode == PlayerPrefs.GetInt("Teleport")){
+                        continue;
+                    }
                     //set player prefs and change the keybind
                     PlayerPrefs.SetInt(keybindToChange, (int)keycode);
                     isWaitingForInput = false;

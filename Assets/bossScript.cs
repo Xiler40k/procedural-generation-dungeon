@@ -77,8 +77,7 @@ public class bossScript : MonoBehaviour
                     } else {
                         randomAttack = Random.Range(0, 3);
                     }
-                randomAttack = Random.Range(3, 4);
-            } 
+                } 
             }
             else {
                 randomAttack = -1;
@@ -120,7 +119,7 @@ public class bossScript : MonoBehaviour
     }
     IEnumerator bossTimer() {
         bossTimerWaited = false;
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(4f);
         bossTimerWaited = true;
     }
 

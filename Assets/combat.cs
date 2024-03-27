@@ -178,10 +178,10 @@ public class combat : MonoBehaviour
 
     IEnumerator teleportTimer()
     {
-        var timerLeft = 10;
+        var timerLeft = 5;
         canTp = false;
-        tpText.text = "0:10";
-        for (int i = 0; i < 10; i++)
+        tpText.text = "0:05";
+        for (int i = 0; i < 5; i++)
         {
             yield return new WaitForSeconds(1);
             timerLeft--;

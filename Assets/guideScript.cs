@@ -25,6 +25,7 @@ public class guideScript : MonoBehaviour
         dialoguesBox.text = "";
         PlayerPrefs.SetInt("Paused", 1);
         nextdialogues();
+        nextdialogues();
     }
     void Update() {
         if (Input.GetMouseButtonDown(0) && dialoguesFinished) {

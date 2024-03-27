@@ -12,7 +12,7 @@ public class Generation : MonoBehaviour
     public GameObject enemySystemObject;
     private int recursions = 0;
     private int targetRecursions = 6; // this is desired number of rooms per path iteration. (not needed anymore) 
-    private int[] targetRecursionsArray = new int[3] { 3, 3, 5 } ;
+    private int[] targetRecursionsArray = new int[3] { 3, 3, 4 } ;
     HashGrid hashTable;
     Backtrack backtrack;
     seedScript SeedScript;

@@ -38,18 +38,22 @@ public class generationMenuScript : MonoBehaviour
         }
         else
         {
-            if (int.Parse(inputField.text) < 2147483647 || int.Parse(inputField.text) < 0)
+            long parsedValue;
+            if (long.TryParse(inputField.text, out parsedValue) && parsedValue <= 2147483647 && parsedValue >= 0)
             {
-                PlayerPrefs.SetInt("seed", int.Parse(inputField.text));
+                PlayerPrefs.SetInt("seed", (int)parsedValue);
                 PlayerPrefs.SetInt("generateDungeon", 1);
                 SceneManager.LoadScene("Game");
-            } else {
-                if (isInt(inputField.text) == true) {
+            } 
+            else 
+            {
+                if (parsedValue > 2147483647 || parsedValue < 0) 
+                {
                     StartCoroutine(showSeedError());
-                    return;
-                } else {
+                } 
+                else 
+                {
                     StartCoroutine(showLetterError());
-                    return;
                 }
             }
         }
